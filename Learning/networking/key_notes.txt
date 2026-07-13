@@ -1,0 +1,31 @@
+NAT Gateway must be in a public subnet.
+Elastic IP is required for a NAT Gateway.
+Route Table Association connects a subnet to a route table.
+Security Groups are stateful; Network ACLs are stateless.
+Public subnet = route to Internet Gateway to access internet
+Private subnet = route to NAT Gateway to access internet
+
+
+Why is NAT Gateway required?
+
+Answer:
+
+Because instances in private subnets do not have public IPs. They require a NAT Gateway located in a public subnet to access the Internet for outbound traffic 
+(package updates, downloading software, etc.), while still remaining inaccessible from the Internet.
+
+
+Suppose you change:
+
+count = 2
+
+to
+
+count = 3
+
+Terraform compares the desired configuration in the .tf files with the current state stored in the state file. 
+Since two subnets already exist and only count has increased from 2 to 3, Terraform determines that only one additional subnet needs to be created. 
+It does not recreate the existing subnets because their configuration hasn't changed.
+
+
+
+

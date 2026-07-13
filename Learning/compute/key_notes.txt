@@ -1,0 +1,170 @@
+Provider
+Provider is used to authenticate Terraform with AWS.
+One provider can manage multiple AWS resources.
+Region is defined in the provider block.
+Provider plugins are downloaded during terraform init.
+
+EC2
+EC2 is a virtual machine in AWS.
+ami specifies the operating system image.
+instance_type defines CPU and memory.
+count creates multiple identical resources.
+count.index starts from 0.
+Use count.index + 1 if numbering should start from 1.
+terraform apply -replace recreates specific resources.
+
+
+Key Pair
+Used for SSH authentication.
+Terraform imports the public key into AWS.
+Private key should never be stored in Terraform.
+Public key is specified using file().
+
+Tags
+Name (capital N) creates the instance name visible in the AWS Console.
+name is just a normal tag.
+Tags help organize and identify AWS resources.
+
+
+Security Groups
+Security Groups are stateful.
+They act as a virtual firewall.
+Attached to EC2 instances.
+Only Allow rules are supported.
+Return traffic is automatically allowed.
+Security Groups do not control routing.
+
+Route Tables vs Security Groups
+Route Tables decide where traffic goes.
+Security Groups decide whether traffic is allowed.
+Route Tables are associated with subnets.
+Security Groups are attached to instances.
+
+
+
+User Data
+Executes during the first boot of an EC2 instance.
+Commonly used for:
+Installing packages
+Configuring applications
+Bootstrapping servers
+Updating user_data on an existing instance does not rerun the script automatically.
+Recreating the instance executes user_data again.
+
+
+
+
+EBS
+EBS is block storage.
+Data persists independently of the EC2 instance (unless configured otherwise).
+A newly attached EBS volume must be:
+Partitioned (optional)
+Formatted
+Mounted
+lsblk shows attached block devices.
+df -h shows mounted filesystems.
+
+
+
+IAM Role
+IAM Roles provide temporary AWS credentials.
+No hardcoded Access Key or Secret Key required.
+Roles follow the principle of least privilege.
+EC2 assumes the IAM Role automatically.
+
+Trust Policy
+Trust Policy defines who can assume the role.
+For EC2:
+Principal:
+  Service: ec2.amazonaws.com
+
+
+
+
+IAM Policy
+Defines what actions are allowed.
+Policies are attached to Roles.
+Can be:
+AWS Managed
+Customer Managed
+
+IAM Instance Profile
+EC2 cannot attach an IAM Role directly.
+EC2 attaches an Instance Profile.
+Instance Profile contains exactly one IAM Role.
+
+
+
+Metadata Service (IMDS)
+Provides temporary credentials.
+Accessible only from inside the EC2 instance.
+Newer EC2 instances commonly require IMDSv2.
+Never expose metadata service externally.
+
+Terraform Dependencies
+
+Terraform automatically creates dependencies when resources reference one another.
+
+Example:
+
+volume_id = aws_ebs_volume.ebs_volume.id
+
+No depends_on required.
+
+Use depends_on only when Terraform cannot infer the dependency.
+
+
+Useful Terraform Commands
+terraform init
+terraform fmt
+terraform validate
+terraform plan
+terraform apply
+terraform destroy
+terraform output
+terraform state list
+terraform state show
+terraform graph
+terraform console
+terraform import
+terraform apply -replace
+terraform apply -target
+terraform plan -destroy
+
+Common Troubleshooting
+
+Cannot SSH
+Check Security Group (Port 22)
+Check Key Pair
+Check Public IP
+Check Route Table
+Check Internet Gateway
+
+IAM Role Not Working
+
+Verify:
+
+aws sts get-caller-identity
+
+Expected:
+
+arn:aws:sts::ACCOUNT:assumed-role/ec2-role/INSTANCE_ID
+
+
+User Data Not Executed
+
+Remember:
+
+Runs only during first boot.
+Recreate the instance if needed.
+
+
+
+
+
+
+
+
+
+
+
