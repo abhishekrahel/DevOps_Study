@@ -27,5 +27,42 @@ Since two subnets already exist and only count has increased from 2 to 3, Terraf
 It does not recreate the existing subnets because their configuration hasn't changed.
 
 
+Ok, so vpc_id created in child module and then root module uses this to pass in to subnet child module.
 
+"Terraform child modules don't communicate directly. One module exposes values through outputs, the root module reads those outputs using 
+module.<module_name>.<output_name>, and then passes them as input variables to another child module."
 
+A rule to remember
+
+In a module block:
+
+child_variable_name = root_value
+
+The left side is the variable defined in the child module.
+
+The right side is the value you're passing from the root module.
+
+Most module errors are simply variable-name mismatches.
+
+When debugging modules, I mentally trace the variable through the entire flow:
+
+terraform.tfvars
+        ↓
+Root variables.tf
+        ↓
+Root module block
+        ↓
+Child variables.tf
+        ↓
+Child main.tf
+
+If the names and types are consistent at each step, Terraform is usually happy.
+
+Notice how each module either:
+
+receives values as inputs, or
+creates resources and exposes outputs.
+
+The root module is the one connecting everything together.
+
+Now you're reasoning about module interfaces—what a module needs as input and what it should expose as output. That's the mindset used when building maintainable Terraform projects.
