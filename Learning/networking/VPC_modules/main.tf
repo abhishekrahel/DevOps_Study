@@ -25,3 +25,17 @@ module "igw" {
 
   vpc_id = module.vpc.vpc_id
 }
+
+module "eip" {
+
+  source = "./modules/eip"
+
+}
+
+module "nat_gateway" {
+  source = "./modules/nat_gateway"
+
+  eip_allocation_id    = module.eip.eip_id
+  subnet_id = module.subnet.public_subnet_ids
+
+}

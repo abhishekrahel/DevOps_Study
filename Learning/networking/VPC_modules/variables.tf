@@ -14,3 +14,4 @@ variable "priv_subnet_cidr" {
   type = list(string)
 }
 
+
