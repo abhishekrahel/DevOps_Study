@@ -55,6 +55,25 @@ module "priv_route_table" {
 
 }
 
+module "pub_asso_rt" {
+
+  source                = "./modules/pub_asso_rt"
+  public_subnet_ids     = module.subnet.public_subnet_ids
+  public_route_table_id = module.pub_route_table.pub_route_table_id
+}
+
+module "priv_asso_rt" {
+
+  source              = "./modules/priv_asso_rt"
+  private_subnet_ids  = module.subnet.private_subnet_ids
+  private_route_table_id = module.priv_route_table.route_table_id
+}
+
+
+
+
+
+
 
 
 
