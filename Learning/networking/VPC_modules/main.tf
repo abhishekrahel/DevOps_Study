@@ -35,7 +35,32 @@ module "eip" {
 module "nat_gateway" {
   source = "./modules/nat_gateway"
 
-  eip_allocation_id    = module.eip.eip_id
-  subnet_id = module.subnet.public_subnet_ids
+  eip_allocation_id = module.eip.eip_id
+  subnet_id         = module.subnet.public_subnet_ids
+}
+
+module "pub_route_table" {
+  source = "./modules/pub_route_table"
+
+  vpc_id = module.vpc.vpc_id
+  igw    = module.igw.igw_id
 
 }
+
+module "priv_route_table" {
+  source = "./modules/priv_route_table"
+
+  vpc_id    = module.vpc.vpc_id
+  nat_gw_id = module.nat_gateway.nat_gw_id
+
+}
+
+
+
+
+
+
+
+
+
+
