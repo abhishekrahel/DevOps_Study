@@ -88,6 +88,19 @@ module "ssh_keys" {
 
 }
 
+module "ec2" {
+
+  source                = "./modules/ec2"
+
+  ami_id =              var.ami_id
+  instance_type =         var.instance_type
+  subnet_id             = module.subnet.public_subnet_ids[0]
+  key_name              = module.ssh_keys.instance_keys_name
+  instance_profile_name = module.iam.instance_profile_name
+  security_group_id     = module.security_group.custom_sg
+
+}
+
 
 
 

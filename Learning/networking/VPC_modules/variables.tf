@@ -14,4 +14,5 @@ variable "priv_subnet_cidr" {
   type = list(string)
 }
 
-
+variable "ami_id" {}
+variable "instance_type" {}
