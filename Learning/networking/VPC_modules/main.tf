@@ -64,9 +64,22 @@ module "pub_asso_rt" {
 
 module "priv_asso_rt" {
 
-  source              = "./modules/priv_asso_rt"
-  private_subnet_ids  = module.subnet.private_subnet_ids
+  source                 = "./modules/priv_asso_rt"
+  private_subnet_ids     = module.subnet.private_subnet_ids
   private_route_table_id = module.priv_route_table.route_table_id
+}
+
+module "security_group" {
+
+  source = "./modules/security_group"
+  vpc_id = module.vpc.vpc_id
+
+}
+
+module "iam" {
+
+  source = "./modules/iam"
+
 }
 
 
