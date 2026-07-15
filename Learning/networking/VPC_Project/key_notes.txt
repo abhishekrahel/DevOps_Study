@@ -66,3 +66,13 @@ creates resources and exposes outputs.
 The root module is the one connecting everything together.
 
 Now you're reasoning about module interfaces—what a module needs as input and what it should expose as output. That's the mindset used when building maintainable Terraform projects.
+
+Notice the pattern:
+
+Child variable name      =      Value from root
+
+eip_allocation_id        =      module.eip.eip_id
+
+The left side must match the variable name declared in the child module.
+
+The right side is the value you want to pass.
