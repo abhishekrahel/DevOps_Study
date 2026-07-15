@@ -158,12 +158,92 @@ Remember:
 Runs only during first boot.
 Recreate the instance if needed.
 
+Step 1: Create an IAM Role
+
+The role answers the question:
+
+"Who is allowed to assume this role?"
+
+For an EC2 instance, the trust policy says:
+
+EC2 service can assume this role.
+
+So the trust relationship is between:
+
+EC2
+ │
+ ▼
+IAM Role
+
+
+Step 2: Attach permissions to the Role
+
+The role by itself has no permissions.
+
+You attach a policy, for example:
+
+AmazonSSMManagedInstanceCore
+AmazonS3ReadOnlyAccess
+CloudWatchAgentServerPolicy
+
+Now the role has permissions.
+
+IAM Role
+     │
+     ▼
+Policy Attached
+
+
+Step 3: Create an Instance Profile
+
+This is the part many people forget.
+
+EC2 cannot attach an IAM Role directly.
+
+It attaches an Instance Profile, and the Instance Profile contains the IAM Role.
+
+IAM Role
+     │
+     ▼
+Instance Profile
+     │
+     ▼
+EC2 Instance
+
+Think of the Instance Profile as a wrapper around the IAM Role.
+
+
+Why do we need an Instance Profile?
+
+A good answer is:
+
+"An IAM Role defines the permissions, while an Instance Profile is the AWS object that allows an EC2 instance to use that role. 
+EC2 instances are associated with Instance Profiles rather than directly with IAM Roles."
 
 
 
 
+Remember this rule
+
+Terraform references always follow this pattern:
+
+resource_type.resource_name.attribute
+
+Examples:
+
+aws_vpc.custom_vpc.id
+aws_subnet.public[0].id
+aws_security_group.custom_sg.id
+aws_iam_role.ec2_role.name
+aws_key_pair.project_keys.name
 
 
+"How do Terraform modules communicate?"
+
+You can now confidently say:
+
+"Each module exposes only the values needed by downstream modules through outputs. The root module acts as the orchestrator, wiring those outputs into the input variables 
+of other child modules."
 
 
 
