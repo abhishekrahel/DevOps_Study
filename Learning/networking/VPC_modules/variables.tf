@@ -16,3 +16,7 @@ variable "priv_subnet_cidr" {
 
 variable "ami_id" {}
 variable "instance_type" {}
+variable "disk_size" {
+  type= number
+}
+variable "device_name" {}

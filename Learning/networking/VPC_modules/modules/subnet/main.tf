@@ -4,6 +4,9 @@ resource "aws_subnet" "public" {
     vpc_id = var.vpc_id
     availability_zone = var.az[count.index]
 
+    map_public_ip_on_launch = true
+
+
     tags = {
       Name = "custom-pub-subnet"
 }
