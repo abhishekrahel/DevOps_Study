@@ -29,15 +29,19 @@ jobs:
           aws-region: us-east-1
 
       - name: Terraform Init
+        working-directory: Projects/Terraform/pipeline-test 
         run: terraform init
 
       - name: Terraform Format Check
+        working-directory: Projects/Terraform/pipeline-test 
         run: terraform fmt -check
 
       - name: Terraform Validate
+        working-directory: Projects/Terraform/pipeline-test 
         run: terraform validate
 
       - name: Terraform Plan
+        working-directory: Projects/Terraform/pipeline-test 
         run: terraform plan -out=tfplan -var-file="input.tfvars"
 
     # - name: Manual Approval
