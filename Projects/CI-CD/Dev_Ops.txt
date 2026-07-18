@@ -318,6 +318,13 @@ ansible-galaxy role apache init
 To run terraform code on local---Terraform software setup, aws auth, code and then commands.
 To run by pipeline---use ubuntu server and then install terraform, auth, code from repo and and then commands.
 
+
+Typical workflow:
+
+👨‍💻 Developer runs terraform fmt locally.
+📤 Pushes the formatted code.
+🤖 CI runs terraform fmt -check to verify nothing was missed.
+
 ----------------------------------------------------------------------
 
 assignment 3 (githubactions)
