@@ -3,7 +3,7 @@ resource "aws_instance" "infra_by_pipeline" {
   instance_type = var.instance_type
 
   tags = {
-    Name = "server_by_pipeline"
+    Name = "server_by_pipeline_testing_auto_trigger"
 
   }
 
