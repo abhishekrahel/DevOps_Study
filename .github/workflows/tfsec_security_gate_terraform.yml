@@ -44,6 +44,8 @@ jobs:
 
       - name: Run tfsec
         uses: aquasecurity/tfsec-action@v1.0.3
+        with:
+          working_directory: Projects/Terraform/pipeline-test
 
       - name: Terraform Plan
         run: terraform plan -out=tfplan -var-file=input.tfvars
