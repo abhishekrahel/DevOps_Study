@@ -5,13 +5,13 @@ resource "aws_instance" "infra_by_pipeline" {
   #This forces the use of IMDSv2, which is AWS's more secure metadata service.
 
   metadata_options {
-  http_endpoint = "enabled"
-  http_tokens   = "required"
-}
+    http_endpoint = "enabled"
+    http_tokens   = "required"
+  }
 
-root_block_device {
-  encrypted = true
-}
+  root_block_device {
+    encrypted = true
+  }
 
 
 
