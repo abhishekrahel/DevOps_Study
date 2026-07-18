@@ -1,4 +1,4 @@
-name: Terraform Deployment
+name: Terraform Deployment using tfsec
 
 on:
     push:
@@ -11,7 +11,7 @@ jobs:
   terraform:
 
   
-    name: Terraform
+    name: Terraform tfsec
     runs-on: ubuntu-latest
 
     defaults:
@@ -44,6 +44,8 @@ jobs:
 
       - name: Run tfsec
         uses: aquasecurity/tfsec-action@v1.0.3
+        with:
+          working_directory: Projects/Terraform/pipeline-test
 
       - name: Terraform Plan
         run: terraform plan -out=tfplan -var-file=input.tfvars
@@ -56,7 +58,7 @@ jobs:
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
-        run: terraform apply -auto-approve tfplan
+        run: terraform apply --auto-approve tfplan
 
       # - name: Terraform Apply
       #   run: terraform apply -auto-approve tfplan
