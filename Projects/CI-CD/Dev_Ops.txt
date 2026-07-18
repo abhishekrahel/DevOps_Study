@@ -315,6 +315,68 @@ ansible-galaxy role apache init
 
 ----------------------------------------------------------------------
 
+To run terraform code on local---Terraform software setup, aws auth, code and then commands.
+To run by pipeline---use ubuntu server and then install terraform, auth, code from repo and and then commands.
+
+----------------------------------------------------------------------
+
+assignment 3 (githubactions)
+create a github actions yaml for below task
+
+task: create a terraform pipeline, once you trigger the pipeline your infrastructure should be created
+
+things to taks care:
+authentication between aws and git hub actions will be required
+authentication keys need to be stored as a secret and use it in pipeline
+
+run the pipeline and check if infrastructure is created in aws
+
+assignment4
+create a github workflow to deploy terraform code but with below conditions
+1. take input from user for which environment they want to create resources
+if user selects dev then resources in aws should have naming convention as dev
+if user gives qa then resources in aws should have naming convention as qa
+
+
+2. take input from user for actions the pipeline want to perform
+
+scenerios 
+if user selects plan then only plan stage should run
+if users selects apply then plan and apply both should run
+if user selects destroy then plan and destroy should run
+
+
+note= make sure your secrets and variables are not hard coded in code or pipeline
+
+
+
+3rd june
+jenkins assignments
+
+create another ec2 instance and try to set that machine as jenkins node
+to verify run the pipeline using that node
+
+
+4th june
+create a terraform pipeline in Jenkins
+once you make any changes on the GitHub your pipeline should trigger
+
+note:
+
+tasks:
+
+git checkout
+aws authentication
+terraform installation
+terraform init
+terraform plan 
+terraform apply
+
+
+my pipeline should stop/pause between the plan and apply stage and ask for my manual approval
+
+
+
 
 
 
