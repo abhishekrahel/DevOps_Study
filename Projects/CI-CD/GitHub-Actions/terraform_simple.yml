@@ -13,6 +13,10 @@ jobs:
     name: Terraform
     runs-on: ubuntu-latest
 
+    defaults: 
+      run:
+        working-directory: Projects/Terraform/pipeline-test
+
     steps:
 
       - name: Checkout Code
@@ -28,16 +32,16 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Terraform Init
+      - name: Terraform Init 
         run: terraform init
 
-      - name: Terraform Format Check
+      - name: Terraform Format Check 
         run: terraform fmt -check
 
-      - name: Terraform Validate
+      - name: Terraform Validate 
         run: terraform validate
 
-      - name: Terraform Plan
+      - name: Terraform Plan 
         run: terraform plan -out=tfplan -var-file="input.tfvars"
 
     # - name: Manual Approval
@@ -46,5 +50,5 @@ jobs:
     #     secret: ${{ secrets.GITHUB_TOKEN }}
     #     approvers: abhishekrahel
 
-      - name: Terraform Apply
-        run: terraform apply -auto-approve tfplan
+      - name: Terraform Apply      
+        run: terraform apply --auto-approve tfplan
