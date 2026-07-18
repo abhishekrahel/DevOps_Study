@@ -1,4 +1,4 @@
-name: Terraform Deployment
+name: Terraform Deployment using tfsec
 
 on:
     push:
@@ -11,7 +11,7 @@ jobs:
   terraform:
 
   
-    name: Terraform
+    name: Terraform tfsec
     runs-on: ubuntu-latest
 
     defaults:

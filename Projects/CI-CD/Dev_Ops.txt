@@ -325,6 +325,63 @@ Typical workflow:
 📤 Pushes the formatted code.
 🤖 CI runs terraform fmt -check to verify nothing was missed.
 
+On your local machine
+
+Use:
+
+terraform fmt -recursive
+
+This automatically fixes formatting across your entire project.
+
+
+In GitHub Actions
+
+Use:
+
+terraform fmt -check -recursive
+
+This ensures developers have already formatted their code before pushing it. If someone forgets, the pipeline fails and reminds them to run terraform fmt.
+
+Workflow 2
+Push to dev
+      │
+      ▼
+fmt
+validate
+tfsec
+plan
+
+Push to main
+      │
+      ▼
+fmt
+validate
+tfsec
+plan
+apply
+
+Much closer to a real CI/CD pipeline
+
+
+This is a common workflow in DevOps teams:
+
+Developer
+     │
+     ▼
+Push to dev
+     │
+     ▼
+Validation + Security Scan + Plan
+     │
+     ▼
+Review
+     │
+     ▼
+Merge to main
+     │
+     ▼
+Apply Infrastructure
+
 ----------------------------------------------------------------------
 
 assignment 3 (githubactions)
