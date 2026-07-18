@@ -382,6 +382,10 @@ Merge to main
      ▼
 Apply Infrastructure
 
+I integrated tfsec into a GitHub Actions pipeline so every push performs a static security scan before infrastructure changes are applied. 
+During testing, it identified issues such as unrestricted security group rules, IMDSv2 not being enforced, and unencrypted root EBS volumes. 
+I then updated the Terraform configuration to enforce IMDSv2, enable EBS encryption, and review network access rules before deployment."
+
 ----------------------------------------------------------------------
 
 assignment 3 (githubactions)
