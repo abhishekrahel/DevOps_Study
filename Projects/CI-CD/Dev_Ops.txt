@@ -1,0 +1,331 @@
+SDLC
+
+1. Waterfall model----there is no feedback in between---it does not suite nowdays bcz of technology evolved--its used when there is no timeline---less flexible.
+
+2. Agile model----continuous feedback---feedback in sprints 
+
+Dev and Ops work in silos--causes delay 
+
+3. Dev-Ops ( spped + stability )
+
+continouus integration, CD and feedback cycles are implemented through 
+
+automation and cultural alignment.
+
+---------------------------------------------------------------------------------
+
+Code---VCS ( git and github)
+
+
+CI/CD pipeline and tools----jenkins/maven-----container (docker)  
+
+container orchestartion tool---Kubernetes
+microservice and monolithic Architecture
+
+Build---test---pkg---------deploy
+
+terraform
+ansible
+
+Monitoring of microservice and monolithic apps 
+
+Prometheus and Grafana or EFK stack 
+
+----------------------------------------------------------------------------------
+
+Git and GitHub
+
+
+VSC install
+
+
+locally------------------gitbash/VSCode
+
+
+github 
+
+
+----------------------------------------------------------------------------------
+
+The core difference is that Git is the software tool used to manage code history locally, 
+while GitHub and Bitbucket are online platforms where you host and share that code with others.
+
+
+
+These are common Git commands used in various situations:
+
+start a working area (see also: git help tutorial)
+   clone      Clone a repository into a new directory
+   init       Create an empty Git repository or reinitialize an existing one
+
+work on the current change (see also: git help everyday)
+   add        Add file contents to the index
+   mv         Move or rename a file, a directory, or a symlink
+   restore    Restore working tree files
+   rm         Remove files from the working tree and from the index
+
+examine the history and state (see also: git help revisions)
+   bisect     Use binary search to find the commit that introduced a bug
+   diff       Show changes between commits, commit and working tree, etc
+   grep       Print lines matching a pattern
+   log        Show commit logs
+   show       Show various types of objects
+   status     Show the working tree status
+
+grow, mark and tweak your common history
+   backfill   Download missing objects in a partial clone
+   branch     List, create, or delete branches
+   commit     Record changes to the repository
+   history    EXPERIMENTAL: Rewrite history
+   merge      Join two or more development histories together
+   rebase     Reapply commits on top of another base tip
+   reset      Set `HEAD` or the index to a known state
+   switch     Switch branches
+   tag        Create, list, delete or verify tags
+
+collaborate (see also: git help workflows)
+   fetch      Download objects and refs from another repository
+   pull       Fetch from and integrate with another repository or a local branch
+   push       Update remote refs along with associated objects
+
+------------------------------------------------------------------------------------
+Configure Git
+
+1. git and git -v
+2. create working dir----mkdir devops_learning 
+3. git init ---create .git dir that is git repo
+
+Initialized empty Git repository in C:/Users/admin/devops_learning/.git/
+4. Configure git username
+
+git config --global user.name "arahel"
+
+git config --global user.email "abhishekrahel@example.com"
+
+5. verify git configuration
+
+git config --global --list 
+
+Git Hub:  https://github.com/discover-devops?tab=repositories
+About me:  https://github.com/discover-devops/About-Me/blob/main/Who%20AM%20I.md
+
+------------------------------------------------------------
+touch myfile-----file is untracked under OS control
+
+to track the file by git ( stage and commit):->
+
+git add myfile----file is now in staging area
+git status
+git commit -m "file is ready" 
+git status
+
+git restore---in case modified and then revert 
+
+modified/staged and then revert ----git restore --staged ( back to modified area)-----git restore 
+
+
+-----------------------------------------------------------
+git reset--used when commit is completed.
+
+
+soft reset----remove commit history and keeps changes in staging area
+
+git log --online
+git reset --soft HEAD~1-----------modified green
+git restore --staged--------------modified red
+git restore-----------------------previous commit
+------------------------------------------------------------
+mixed reset----remove commit history and unstage the file
+
+git log --online
+git reset --mixed HEAD~1--------modified red
+git restore---------------------previous commit
+------------------------------------------------------------
+Hard reset---remove commit history and directly to previous commit
+
+git reset --hard HEAD~1----------directly to previous commit
+
+git log
+
+every commit will have commit id
+-------------------------------------------------------------
+GitHub:
+
+git remote add origin <repoURL name>
+
+git push origin master 
+
+git push origin --all
+
+git stash----temp saving the unfinished work and switch the branch to main to fix the bug and come back to dev branch and unstash the work.
+
+git stash -u filename
+git stash pop---unstash
+
+git branch -D branchname---delete branch locally
+git push origin --delete branchname
+
+git remote -v---will show list of remote repos connected
+
+setup auth using ssh key between local repo and remote repo
+
+git push origin main
+
+git pull origin main
+
+git fetch---(safe operation)---download latest changes from remote repo but does not merge changes in to working dir.
+
+git pull---download + merge---immediate merges in to current branch.
+
+
+
+suppose there is a bug in the master branch and dont commit the work in dev branch untill bug is fixed in main branch.
+so stash the work.
+
+git branch dev feature---to create branches
+
+Go to destination branch and use git merge branch name to merge.
+
+--------------------------------------------------------------
+
+Amazon ECR (Elastic Container Registry) is a fully managed AWS service that securely stores, manages, and deploys container images. 
+It acts as a cloud-based storage locker for Docker and Open Container Initiative (OCI) images, eliminating the need to operate your own container repositories.
+
+
+
+Amazon Elastic Kubernetes Service (EKS) is a fully managed service 
+that allows you to run Kubernetes on AWS without having to install or operate your own Kubernetes control plane.
+
+
+--------------------------------------------------------------------------------------------------------------------
+
+CI-CD
+
+Develop the code---Dev
+Run the code---Ops
+
+
+
+Jenkins/Github actions/azure-devops----create the pipelines and It automates the tasks through workflow file/Jenkinsfile ( list of tasks like one task may include terraform/init/plan/apply )--comes under CI/CD tools
+
+We can delpoy the terraform code using pipeline as well to automate terraform code for provisioning of infrastrucutre.
+
+Mainly, this is for software part, creation and deployment.
+
+A pipeline is a concept, not a file, the automated CI/CD process from code to deployment.
+A pipeline is defined in a workflow file/Jenkinsfile.
+
+So, pipeline is the overall automation process, while workflow (GitHub Actions) and Jenkinsfile (Jenkins) are the files that define that process in their respective tools.
+
+------------------------------------------------------------------------------
+
+azure devops/github actions---yaml-----start writing yaml file and run 
+
+Jenkins---groovy code----self hosted---install jenkins software and setup on server 
+
+
+use the already created templates or can create for setting up pipeline or file of tasks
+
+
+So basically, we are creating file of tasks ( pipeline, workflow) with already created templates that will create the package and run on server. 
+and options are there to run code manual/automatic, whenever there is a push pipeline will run in manual/automatic depends how its defined in yaml file.
+
+
+A DevOps pipeline is an automated workflow that moves code from a developer's machine into production. 
+By automating the building, testing, and deployment of software, pipelines eliminate manual hand-offs, reduce human error
+and allow teams to deliver high-quality updates continuously and reliably
+
+Basically CI is for building jar files and testing and CD is for Deployment.
+
+CI---convert Java code in to executable package through tool like Maven (build tool)---CI is building the code into a package for deployment.
+
+CD---to run the code/package on the server.
+
+---------------------------------------------------------------------------------
+whenever there is a change in the code and push to repo, new pkg would be created and whenever there is a new pkg we called it as Continuous Integration.
+
+when deploy the code on non-prod dev/test/qa environment ( in multiple phases )----Continuous deployment
+
+when deploy the code on prod environment-------------------------------------------Continuous delivery
+
+In case of Prod---practice is to put Manual approval
+In case of non-prod---auto approval may be setup.
+
+---------------------------------------------------------------------------------
+
+Pipeline require temp machines like below
+
+Jenkins---Self hosted---need server to setup jenkins environment---nodes
+
+Github actions/Azure Devops----self hosted or use their Services----runners
+
+Jenkins---nodes
+Github actions----runners
+Azure devops------agents
+
+---------------------------------------------------------------------------------------------------------------- 
+
+Add code in pipeline to destroy the resource created based on condition like if input.destroy = true then destroy 
+otherwise dont destroy--input in the pipeline from the user
+
+
+Design pipeline based on 2 factors:
+
+enviroement wise create yml files like qa.yml and prod.yml
+or take input from user to run the pipeline in specifc environment
+
+free style----using shell
+pipeline---using templates ( dec and scripted)
+
+
+----------------------------------------------------------------------------------------------------------------
+
+
+Jenkins pipelines----scripted and declaritive--groovy language used 
+
+start from pipeline---dec
+
+
+start from node---scripted
+
+
+for complex pipelines use scripted one.
+
+
+Jenkins and agents should be on sepearte servers 
+
+app runners
+
+use declaritive in Jenkins for terraform infra
+
+Use webhook to send/push notifications to third party tools--used to auto trigger the pipeline
+add conditions in pipeline code for manual approval
+
+aws configure get aws_access_key_id
+aws configure get aws_secret_access_key
+
+
+
+
+Ansible:->
+
+
+use of role to install apache
+
+ansible-galaxy role apache init
+
+
+----------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
