@@ -1,4 +1,4 @@
-name: Terraform_env_specific 
+name: Terraform_action_specific 
 
 on:
   workflow_dispatch:
@@ -15,7 +15,7 @@ on:
 jobs:
 
   terraform:
-    name:    env_specific
+    name:    action_specific
     runs-on: ubuntu-latest
 
     defaults:
