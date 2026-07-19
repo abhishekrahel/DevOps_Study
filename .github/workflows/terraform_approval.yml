@@ -65,12 +65,10 @@ jobs:
 
       needs: terraform-plan
 
-      runs-on: ubuntu-latest
-
-      
-    
       environment: 
-        name: production 
+        name: production
+
+      runs-on: ubuntu-latest
 
       defaults:
         run:
@@ -100,7 +98,7 @@ jobs:
           uses: actions/download-artifact@v4
           with:
             name: tfplan
-            path: Projects/Terraform/pipeline-test/tfplan
+            path: Projects/Terraform/pipeline-test
 
         - name: Terraform Apply
           if: github.event.inputs.action == 'apply'
