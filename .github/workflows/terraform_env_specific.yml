@@ -1,4 +1,4 @@
-name: Terraform_3rd Deployment
+name: Terraform_env_specific 
 
 on:
   workflow_dispatch:
@@ -15,8 +15,13 @@ on:
 jobs:
 
   terraform:
-
+    name:    env_specific
     runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working directory: Projects/Terraform/pipeline-test
+
 
     steps:
 
@@ -35,6 +40,9 @@ jobs:
 
       - name: Terraform Init
         run: terraform init
+
+      - name: Terraform fmt
+        run:  terraform fmt -check -recursive
 
       - name: Terraform Validate
         run: terraform validate
