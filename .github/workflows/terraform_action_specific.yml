@@ -48,8 +48,13 @@ jobs:
         run: terraform validate
 
       - name: Terraform Plan
+        if: github.event.inputs.action == 'plan' || github.event.inputs.action == 'apply'
         run: terraform plan -out=tfplan -var-file=input.tfvars
 
+      - name: Terraform Destroy Plan
+        if: github.event.inputs.action == 'destroy'
+        run: terraform plan -destroy -out=tfplan -var-file=input.tfvars
+        
       - name: Terraform Apply
         if: github.event.inputs.action == 'apply'
         run: terraform apply -auto-approve tfplan
