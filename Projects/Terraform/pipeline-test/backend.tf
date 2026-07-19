@@ -1,11 +1,11 @@
 terraform {
-    backend "s3"{
-        bucket = "arahel-tfstate-2026"
-        key = "arahel-tfstate-2026/terraform.tfstate"
-        encrypt = true
-        region = "us-east-1"
-        dynamodb_table = "terraform-locks"
-    }
+  backend "s3" {
+    bucket         = "arahel-tfstate-2026"
+    key            = "arahel-tfstate-2026/terraform.tfstate"
+    encrypt        = true
+    region         = "us-east-1"
+    dynamodb_table = "terraform-locks"
+  }
 }
 
 
