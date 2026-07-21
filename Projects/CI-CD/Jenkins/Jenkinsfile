@@ -7,6 +7,7 @@ pipeline {
                 echo "Webhook triggered successfully!"
                 sh 'date'
                 sh 'git log -1 --oneline'
+		echo "Build #${env.BUILD_NUMBER}"
             }
         }
     }
