@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: html-app
+  namespace: qa
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: html-app
+
+  template:
+    metadata:
+      labels:
+        app: html-app
+
+    spec:
+      containers:
+      - name: html-app
+       # image: 449957914366.dkr.ecr.us-east-1.amazonaws.com/qa-nginx-repo:latest
+        image: 449957914366.dkr.ecr.us-east-1.amazonaws.com/qa-nginx-repo:2
+        ports:
+        - containerPort: 80

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: html-service
+  namespace: qa
+
+spec:
+  selector:
+    app: html-app
+
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+
+  type: LoadBalancer
