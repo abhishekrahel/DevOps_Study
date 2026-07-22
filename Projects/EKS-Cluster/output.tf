@@ -1,3 +1,8 @@
-output "name_of_the _cluster" {
-    value = module.eks.name_of_the_cluster
+output "cluster_name" {
+  value = module.eks.cluster_name
+}
+
+output "cluster_endpoint" {
+  value = module.eks.cluster_endpoint
+
 }
