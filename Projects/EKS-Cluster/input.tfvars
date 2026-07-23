@@ -15,7 +15,7 @@ desired_capacity = 2
 min_capacity     = 1
 max_capacity     = 4
 
-instance_types = ["t3.medium"]
+instance_types = ["t3.small"]
 
 capacity_type = "ON_DEMAND"
 
