@@ -66,3 +66,9 @@ jobs:
           kubectl apply -f Projects/Kubernetes/deployment.yml
           kubectl apply -f Projects/Kubernetes/service.yml
 
+      - name: Verify Deployment
+        run: |
+          kubectl rollout status deployment/html-app -n qa
+          kubectl get pods -n qa
+          kubectl get svc -n qa
+          kubectl describe deployment html-app -n qa
