@@ -74,10 +74,11 @@ module "security_group" {
 
 
 module "eks" {
-  source = "../Terraform/networking/Network_Compute_Modular.Project/modules/eks_module"
+  source = "../Terraform/networking/Network_Compute_Modular.Project/modules/eks"
 
 
-  cluster_name       = var.cluster_name
+  cluster_name = "${var.environment}-eks-cluster"
+  #cluster_name       = var.cluster_name
   private_subnet_ids = module.subnet.private_subnet_ids
 
   desired_capacity = var.desired_capacity
@@ -90,3 +91,8 @@ module "eks" {
 
 }
 
+module "ecr" {
+  source       = "../Terraform/networking/Network_Compute_Modular.Project/modules/ecr"
+  repo_name    = "${var.environment}-nginx-repo"
+  scan_on_push = true
+}

@@ -16,7 +16,7 @@ variable "priv_subnet_cidr" {
 
 
 
-variable "cluster_name" {}
+# variable "cluster_name" {}
 variable "desired_capacity" {
   type = number
 }
@@ -33,6 +33,22 @@ variable "instance_types" {
 variable "capacity_type" {}
 variable "disk_size" {
   type = number
+}
+
+# variable "repo_name" {
+#   description = "ECR repository"
+#   type        = string
+# }
+
+variable "scan_on_push" {
+  description = "Enable image scanning"
+  type        = bool
+  default     = true
+}
+
+variable "environment" {
+  description = "Deployment environment"
+  type        = string
 }
 
 

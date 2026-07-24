@@ -8,8 +8,8 @@ priv_subnet_cidr  = ["10.0.3.0/24", "10.0.4.0/24"]
 
 
 
-
-cluster_name = "rahel-eks-cluster"
+environment = "dev"
+#cluster_name = "rahel-eks-cluster"
 
 desired_capacity = 2
 min_capacity     = 1
@@ -20,3 +20,7 @@ instance_types = ["t3.small"]
 capacity_type = "ON_DEMAND"
 
 disk_size = 20
+
+
+#environment = "prod"
+
