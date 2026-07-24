@@ -21,6 +21,6 @@ spec:
       containers:
       - name: html-app
        # image: 449957914366.dkr.ecr.us-east-1.amazonaws.com/qa-nginx-repo:latest
-        image: 449957914366.dkr.ecr.us-east-1.amazonaws.com/qa-nginx-repo:2
+        image: 449957914366.dkr.ecr.us-east-1.amazonaws.com/dev-nginx-repo:latest
         ports:
         - containerPort: 80
