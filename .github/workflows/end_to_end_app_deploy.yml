@@ -1,0 +1,55 @@
+name: Application Deployment
+
+on:
+    # push:
+    #   branches:
+    #     - main
+    #     - dev
+    workflow_dispatch:     
+
+jobs:
+  app_deploy:
+
+  
+    
+    runs-on: ubuntu-latest
+
+    env:
+          ENVIRONMENT: dev
+          AWS_REGION: us-east-1
+          AWS_ACCOUNT_ID: 449957914366
+          ECR_REPOSITORY: dev-nginx-repo
+    
+
+    steps:
+
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+
+        
+        
+      - name: Build Image
+        # run: docker build -t html_web_server_2 -f ../Docker/dockerfile ../Docker
+        run: docker build -f Projects/Docker_ECR/Dockerfile -t web_server Projects/Docker_ECR
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws-region: us-east-1
+
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+
+
+      - name: Tag Image
+        run: |
+         docker tag web_server:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY
+
+      - name: Push Image
+        run: |
+         docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:latest
+
