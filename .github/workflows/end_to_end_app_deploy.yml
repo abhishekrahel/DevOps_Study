@@ -1,0 +1,18 @@
+name: Application Deployment
+
+on:
+  # push:
+  #   branches:
+  #     - master
+  workflow_dispatch:     
+
+jobs:
+  app_deploy:
+
+  
+    
+    runs-on: ubuntu-latest
+
+    defaults: 
+      run:
+        working-directory: Projects/EKS-Cluster
