@@ -57,18 +57,24 @@ jobs:
           cat <<EOF > prompt.txt
           You are a Senior DevOps Engineer.
 
-          Analyze the following Terraform deployment and provide:
+          Analyze this Terraform deployment.
 
-          1. Infrastructure Summary
-          2. Health Assessment
-          3. Best Practices
-          4. Recommendations
+          Return markdown with the following sections only.
 
-          Terraform Output:
+          # Deployment Summary
+          (Maximum 5 bullet points)
 
-          $(cat terraform_output.json)
+          # Health
+          (Maximum 5 bullet points)
 
-          Return the response in Markdown.
+          # Risks
+          (Maximum 3 bullet points)
+
+          # Recommendations
+          (Maximum 5 bullet points)
+
+          Keep the response under 400 words.
+          Do not repeat the raw Terraform outputs.
           EOF
 
       - name: Generate AI Deployment Summary
