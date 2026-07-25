@@ -73,9 +73,15 @@ jobs:
           # Recommendations
           (Maximum 5 bullet points)
 
+          Terraform Output:
+
+          $(cat terraform_output.json)
+
           Keep the response under 400 words.
           Do not repeat the raw Terraform outputs.
           EOF
+
+          
 
       - name: Generate AI Deployment Summary
         env:
