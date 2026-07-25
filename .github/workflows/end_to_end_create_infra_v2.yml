@@ -54,7 +54,7 @@ jobs:
         run: terraform apply --auto-approve tfplan
 
       - name: Collect Terraform Outputs
-        run: terraform output > terraform_output.txt
+        run: terraform output -json > terraform_output.json
 
       - name: Display Terraform Outputs
         run: |
