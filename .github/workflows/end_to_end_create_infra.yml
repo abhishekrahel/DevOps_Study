@@ -52,3 +52,12 @@ jobs:
 
       - name: Terraform Apply      
         run: terraform apply --auto-approve tfplan
+
+      - name: Collect Terraform Outputs
+        run: terraform output > terraform_output.txt
+
+      - name: Display Terraform Outputs
+        run: |
+             echo "========== Terraform Outputs =========="
+             cat terraform_output.txt
+             

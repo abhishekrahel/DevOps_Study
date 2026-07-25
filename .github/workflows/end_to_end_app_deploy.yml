@@ -72,3 +72,20 @@ jobs:
           kubectl get pods -n qa
           kubectl get svc -n qa
           kubectl describe deployment html-app -n qa
+
+      - name: Collect Kubernetes Status
+        run: |
+           kubectl get nodes > nodes.txt
+           kubectl get pods -A > pods.txt
+           kubectl get svc -A > services.txt
+
+      - name: Display Kubernetes Status
+        run: |
+             echo "========== Nodes =========="
+             cat nodes.txt
+
+             echo "========== Pods =========="
+             cat pods.txt
+
+             echo "========== Services =========="
+             cat services.txt     
