@@ -1,0 +1,103 @@
+name: Application Deployment
+
+on:
+  # push:
+  #   branches:
+  #     - main
+  #     - dev
+  workflow_dispatch:
+
+jobs:
+  app_deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      ENVIRONMENT: dev
+      AWS_REGION: us-east-1
+      AWS_ACCOUNT_ID: 449957914366
+      ECR_REPOSITORY: dev-nginx-repo
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Build Image
+        run: docker build -f Projects/Docker_ECR/Dockerfile -t web_server Projects/Docker_ECR
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Tag Image
+        run: |
+          docker tag web_server:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY
+
+      - name: Push Image
+        run: |
+          docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:latest
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v4
+
+      - name: Configure kubeconfig
+        run: |
+          aws eks update-kubeconfig --region $AWS_REGION --name ${ENVIRONMENT}-eks-cluster
+
+      - name: Deploy to EKS
+        run: |
+          kubectl apply -f Projects/Kubernetes/namespace.yml
+          kubectl apply -f Projects/Kubernetes/deployment.yml
+          kubectl apply -f Projects/Kubernetes/service.yml
+
+      - name: Verify Deployment
+        run: |
+          kubectl rollout status deployment/html-app -n qa
+          kubectl get pods -n qa
+          kubectl get svc -n qa
+          kubectl describe deployment html-app -n qa
+
+      - name: Collect Kubernetes Status
+        run: |
+          kubectl get nodes -o json > nodes.json
+          kubectl get pods -A -o json > pods.json
+          kubectl get svc -A -o json > services.json
+
+      - name: Generate Deployment Summary
+        run: |
+          NODE_COUNT=$(jq '.items | length' nodes.json)
+          READY_NODES=$(jq '[.items[] | select(.status.conditions[] | select(.type=="Ready" and .status=="True"))] | length' nodes.json)
+          POD_COUNT=$(jq '.items | length' pods.json)
+          RUNNING_PODS=$(jq '[.items[] | select(.status.phase=="Running")] | length' pods.json)
+          SERVICE_COUNT=$(jq '.items | length' services.json)
+
+          {
+            echo "# 🚀 Application Deployment Summary"
+            echo ""
+            echo "## Deployment Status"
+            echo "- ✅ Kubernetes Deployment: Successful"
+            echo "- 🌍 Environment: dev"
+            echo ""
+            echo "## Kubernetes Details"
+            echo "| Resource | Value |"
+            echo "|----------|-------|"
+            echo "| Total Nodes | $NODE_COUNT |"
+            echo "| Ready Nodes | $READY_NODES |"
+            echo "| Total Pods | $POD_COUNT |"
+            echo "| Running Pods | $RUNNING_PODS |"
+            echo "| Services | $SERVICE_COUNT |"
+            echo ""
+            echo "## Next Steps"
+            echo "- Verify application URL"
+            echo "- Monitor pod logs"
+            echo "- Check service accessibility"
+          } > summary.md
+
+      - name: Publish Deployment Summary
+        run: |
+          cat summary.md >> $GITHUB_STEP_SUMMARY
