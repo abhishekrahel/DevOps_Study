@@ -12,11 +12,11 @@ output "vpc_id" {
 }
 
 output "public_subnets" {
-  value = module.vpc.public_subnet_ids
+  value = module.subnet.public_subnet_ids
 }
 
 output "private_subnets" {
-  value = module.vpc.private_subnet_ids
+  value = module.subnet.private_subnet_ids
 }
 
 output "node_group_name" {
