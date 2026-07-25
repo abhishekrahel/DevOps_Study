@@ -60,4 +60,18 @@ jobs:
         run: |
              echo "========== Terraform Outputs =========="
              cat terraform_output.txt
+
+      - name: Generate Deployment Summary
+        run: |
+             echo "#Infrastructure Deployment Summary" > summary.md
+             echo "" >> summary.md
+
+             echo "## Terraform Outputs" >> summary.md
+             echo '```' >> summary.md
+             cat terraform_output.txt >> summary.md
+             echo '```' >> summary.md
+
+      - name: Publish Deployment Summary
+        run: |
+             cat summary.md >> $GITHUB_STEP_SUMMARY
              
