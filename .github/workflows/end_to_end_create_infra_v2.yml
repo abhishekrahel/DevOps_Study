@@ -73,7 +73,7 @@ jobs:
 
              echo "## Terraform Outputs" >> summary.md
              echo '```' >> summary.md
-             cat terraform_output.json >> summary.md
+             cat  terraform_output.json >> summary.md
              echo '```' >> summary.md
 
              echo "" >> summary.md
