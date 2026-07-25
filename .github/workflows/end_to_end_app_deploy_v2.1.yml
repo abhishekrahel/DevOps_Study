@@ -67,40 +67,21 @@ jobs:
           kubectl get nodes -o json > nodes.json
           kubectl get pods -A -o json > pods.json
           kubectl get svc -A -o json > services.json
-
-      - name: Generate Deployment Summary
+      - name: Create Kubernetes Summary
         run: |
-          NODE_COUNT=$(jq '.items | length' nodes.json)
-          READY_NODES=$(jq '[.items[] | select(.status.conditions[] | select(.type=="Ready" and .status=="True"))] | length' nodes.json)
-          POD_COUNT=$(jq '.items | length' pods.json)
-          RUNNING_PODS=$(jq '[.items[] | select(.status.phase=="Running")] | length' pods.json)
-          SERVICE_COUNT=$(jq '.items | length' services.json)
+          echo "Environment: dev" > k8s_summary.txt
+          echo "" >> k8s_summary.txt
 
-          {
-            echo "# 🚀 Application Deployment Summary"
-            echo ""
-            echo "## Deployment Status"
-            echo "- ✅ Kubernetes Deployment: Successful"
-            echo "- 🌍 Environment: dev"
-            echo ""
-            echo "## Kubernetes Details"
-            echo "| Resource | Value |"
-            echo "|----------|-------|"
-            echo "| Total Nodes | $NODE_COUNT |"
-            echo "| Ready Nodes | $READY_NODES |"
-            echo "| Total Pods | $POD_COUNT |"
-            echo "| Running Pods | $RUNNING_PODS |"
-            echo "| Services | $SERVICE_COUNT |"
-            echo ""
-            echo "## Next Steps"
-            echo "- Verify application URL"
-            echo "- Monitor pod logs"
-            echo "- Check service accessibility"
-          } > summary.md
+          echo "Nodes:" >> k8s_summary.txt
+          kubectl get nodes >> k8s_summary.txt
 
-      - name: Publish Deployment Summary
-        run: |
-          cat summary.md >> $GITHUB_STEP_SUMMARY
+          echo "" >> k8s_summary.txt
+          echo "Pods:" >> k8s_summary.txt
+          kubectl get pods -A >> k8s_summary.txt
+
+          echo "" >> k8s_summary.txt
+          echo "Services:" >> k8s_summary.txt
+          kubectl get svc -A >> k8s_summary.txt
 
       - name: Verify OpenAI Secret
         env:
@@ -116,43 +97,22 @@ jobs:
       - name: Create AI Prompt
         run: |
           cat <<EOF > prompt.txt
-          You are a Senior Kubernetes and DevOps Engineer reviewing a GitHub Actions deployment.
+          You are a Senior Kubernetes DevOps Engineer.
 
-          Environment: Development (dev)
+          Analyze this Kubernetes deployment.
 
-          Analyze ONLY the Kubernetes information provided below.
+          Return:
 
-          Do NOT ask for additional files.
+          - Deployment Summary
+          - Health Assessment
+          - Risks
+          - Recommendations
 
-          If information cannot be inferred, simply state:
-          "Not enough information available."
+          Kubernetes Status:
 
-          Return markdown with these sections only:
-
-          # 🚀 Deployment Summary
-          Maximum 4 bullet points.
-
-          # ✅ Health Assessment
-          Maximum 4 bullet points.
-
-          # ⚠️ Risks
-          Maximum 3 bullet points.
-
-          # 💡 Recommendations
-          Maximum 5 bullet points.
-
-          Kubernetes Nodes:
           EOF
 
-          cat nodes.json >> prompt.txt
-
-          echo "" >> prompt.txt
-          echo "Kubernetes Pods:" >> prompt.txt
-          cat pods.json >> prompt.txt
-
-          echo "" >> prompt.txt
-          echo "Kubernetes Services:" >> prompt.txt
-          cat services.json >> prompt.txt
+          cat k8s_summary.txt >> prompt.txt
 
       - name: Generate AI Deployment Summary
         env:
@@ -166,26 +126,26 @@ jobs:
             -d "$(jq -n \
               --arg model "gpt-5-mini" \
               --arg input "$PROMPT" \
-              '{model:$model,input:$input}')}" \
+              '{model:$model,input:$input}')" \
             > ai_response.json
 
-            - name: Show AI Response
-              run: |
-                cat ai_response.json | jq
+      - name: Show AI Response
+        run: |
+          cat ai_response.json | jq
 
-      # - name: Extract AI Summary
-      #   run: |
-      #     jq -r '
-      #       .output[]
-      #       | select(.type=="message")
-      #       | .content[]
-      #       | select(.type=="output_text")
-      #       | .text
-      #     ' ai_response.json > ai_summary.md
+      - name: Extract AI Summary
+        run: |
+          jq -r '
+            .output[]
+            | select(.type=="message")
+            | .content[]
+            | select(.type=="output_text")
+            | .text
+          ' ai_response.json > ai_summary.md
 
-      # - name: Publish AI Summary
-      #   run: |
-      #     echo "" >> $GITHUB_STEP_SUMMARY
-      #     echo "---" >> $GITHUB_STEP_SUMMARY
-      #     echo "# 🤖 AI Kubernetes Assessment" >> $GITHUB_STEP_SUMMARY
-      #     cat ai_summary.md >> $GITHUB_STEP_SUMMARY
+      - name: Publish AI Summary
+        run: |
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "# 🤖 AI Kubernetes Assessment" >> $GITHUB_STEP_SUMMARY
+          cat ai_summary.md >> $GITHUB_STEP_SUMMARY
