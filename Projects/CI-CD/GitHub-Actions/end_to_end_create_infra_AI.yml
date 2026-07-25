@@ -1,0 +1,123 @@
+name: Provision AWS Infrastructure AI powered 
+
+on:
+  # push:
+  #   branches:
+  #     - master
+  workflow_dispatch:
+
+jobs:
+  infra_terraform:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: Projects/EKS-Cluster
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Format Check
+        run: terraform fmt -check
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform Plan
+        run: terraform plan -out=tfplan -var-file="input.tfvars"
+
+      # - name: Manual Approval
+      #   uses: trstringer/manual-approval@v1
+      #   with:
+      #     secret: ${{ secrets.GITHUB_TOKEN }}
+      #     approvers: abhishekrahel
+
+      - name: Terraform Apply
+        run: terraform apply --auto-approve tfplan
+
+      - name: Collect Terraform Outputs
+        run: terraform output -json > terraform_output.json
+
+      - name: Create AI Prompt
+        run: |
+          cat <<EOF > prompt.txt
+          You are a Senior DevOps Engineer.
+
+          Analyze this Terraform deployment.
+
+          Return markdown with the following sections only.
+
+          # Deployment Summary
+          (Maximum 5 bullet points)
+
+          # Health
+          (Maximum 5 bullet points)
+
+          # Risks
+          (Maximum 3 bullet points)
+
+          # Recommendations
+          (Maximum 5 bullet points)
+
+          Terraform Output:
+
+          $(cat terraform_output.json)
+
+          Keep the response under 400 words.
+          Do not repeat the raw Terraform outputs.
+          EOF
+
+          
+
+      - name: Generate AI Deployment Summary
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          PROMPT=$(cat prompt.txt)
+
+          curl https://api.openai.com/v1/responses \
+            -H "Authorization: Bearer $OPENAI_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d "$(jq -n \
+              --arg model "gpt-5-mini" \
+              --arg input "$PROMPT" \
+              '{
+                model: $model,
+                input: $input
+              }')" \
+            > ai_response.json
+
+      - name: Show AI Response
+        run: |
+          cat ai_response.json
+
+      - name: Extract AI Summary
+        run: |
+          jq -r '
+            .output[]
+            | select(.type=="message")
+            | .content[]
+            | select(.type=="output_text")
+            | .text
+          ' ai_response.json > ai_summary.md
+
+      - name: Publish AI Summary
+        run: |
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "# 🤖 AI Infrastructure Assessment" >> $GITHUB_STEP_SUMMARY
+          cat ai_summary.md >> $GITHUB_STEP_SUMMARY
