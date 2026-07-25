@@ -96,13 +96,13 @@ jobs:
           cat summary.md >> $GITHUB_STEP_SUMMARY
 
       - name: Verify OpenAI Secret
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
-         if [ -z "$OPENAI_API_KEY" ]; then
-         echo "❌ Secret not found"
-         exit 1
-         else
-         echo "✅ OpenAI Secret Found"
-         fi
-         env:
-         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          if [ -z "$OPENAI_API_KEY" ]; then
+          echo "❌ Secret not found"
+          exit 1
+          else
+          echo "✅ OpenAI Secret Found"
+          fi
              
