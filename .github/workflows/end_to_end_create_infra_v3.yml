@@ -92,3 +92,20 @@ jobs:
       - name: Show AI Response
         run: |
           cat ai_response.json
+
+      - name: Extract AI Summary
+        run: |
+          jq -r '
+            .output[]
+            | select(.type=="message")
+            | .content[]
+            | select(.type=="output_text")
+            | .text
+          ' ai_response.json > ai_summary.md
+
+      - name: Publish AI Summary
+        run: |
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "# 🤖 AI Infrastructure Assessment" >> $GITHUB_STEP_SUMMARY
+          cat ai_summary.md >> $GITHUB_STEP_SUMMARY
