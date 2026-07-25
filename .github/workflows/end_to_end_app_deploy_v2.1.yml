@@ -99,15 +99,29 @@ jobs:
           cat <<EOF > prompt.txt
           You are a Senior Kubernetes DevOps Engineer.
 
-          Analyze this Kubernetes deployment.
+          
 
-          Return:
+          This is a DEVELOPMENT environment.
 
-          - Deployment Summary
-          - Health Assessment
-          - Risks
-          - Recommendations
+          Analyze ONLY the Kubernetes status below.
 
+          Return markdown with these sections:
+
+          # 🚀 Deployment Summary
+          Maximum 4 bullet points.
+
+          # ✅ Health
+          Maximum 4 bullet points.
+
+          # ⚠️ Top Risks
+          Maximum 3 bullet points.
+
+          # 💡 Top Recommendations
+          Maximum 5 bullet points.
+
+          Keep the entire response under 300 words.
+
+          Do not generate YAML or kubectl commands unless there is a critical issue.
           Kubernetes Status:
 
           EOF
