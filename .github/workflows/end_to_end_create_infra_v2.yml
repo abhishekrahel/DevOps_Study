@@ -1,4 +1,4 @@
-name: Provision AWS Infrastructure
+name: Provision AWS Infrastructure_v2
 
 on:
   # push:
