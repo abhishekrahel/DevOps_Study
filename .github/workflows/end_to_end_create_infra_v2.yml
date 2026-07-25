@@ -59,7 +59,7 @@ jobs:
       - name: Display Terraform Outputs
         run: |
              echo "========== Terraform Outputs =========="
-             cat terraform_output.txt
+             cat terraform_output.json
 
       - name: Generate Deployment Summary
         run: |
@@ -73,7 +73,7 @@ jobs:
 
              echo "## Terraform Outputs" >> summary.md
              echo '```' >> summary.md
-             cat terraform_output.txt >> summary.md
+             cat terraform_output.json >> summary.md
              echo '```' >> summary.md
 
              echo "" >> summary.md
