@@ -1,8 +1,22 @@
 # DevOps Study
 
-An enterprise-style DevOps portfolio demonstrating end-to-end Infrastructure as Code (IaC), CI/CD automation, Kubernetes deployments on Amazon EKS, and AI-powered operational assessments.
+DevOps Study is a production-oriented DevOps portfolio that demonstrates the design, automation, deployment, and management of cloud infrastructure on AWS using modern DevOps practices.
 
-The repository showcases production-oriented DevOps practices including Terraform modules, GitHub Actions, Docker, Amazon ECR, Amazon EKS, Kubernetes, security scanning with tfsec, environment approval workflows, and AI-assisted deployment analysis.
+The repository showcases enterprise-style Infrastructure as Code, CI/CD automation, Kubernetes orchestration, containerization, security scanning, and AI-assisted deployment intelligence through GitHub Actions.
+
+## Table of Contents
+
+- [Project Overview](#project-overview)
+- [Skills Demonstrated](#skills-demonstrated)
+- [Features](#features)
+- [Technology Stack](#technology-stack)
+- [CI/CD Pipelines](#cicd-pipelines)
+- [AI Features](#ai-features)
+- [Repository Structure](#repository-structure)
+- [Architecture](#architecture)
+- [Screenshots](#screenshots)
+- [Future Enhancements](#future-enhancements)
+
 
 ## Project Overview
 
@@ -42,18 +56,55 @@ The objective is to simulate enterprise DevOps workflows that are commonly used 
 | tfsec Security Gate | ✅ |
 | Manual Approval | ✅ |
 
-## Technologies
+## ## Technology Stack
 
-- AWS
-- Terraform
-- GitHub Actions
-- Jenkins
-- Docker
-- Amazon ECR
-- Amazon EKS
-- Kubernetes
-- AI (OpenAI API)
-- tfsec
+| Category               | Technologies            |
+| ---------------------- | ----------------------- |
+| Cloud                  | AWS                     |
+| Infrastructure as Code | Terraform               |
+| CI/CD                  | GitHub Actions, Jenkins |
+| Containers             | Docker                  |
+| Container Registry     | Amazon ECR              |
+| Orchestration          | Amazon EKS, Kubernetes  |
+| Security               | tfsec                   |
+| AI                     | OpenAI API              |
+
+## Repository Structure
+
+```text
+.
+├── .github/
+│   └── workflows/
+├── Projects/
+│   ├── Terraform/
+│   ├── Docker/
+│   ├── Kubernetes/
+│   └── Jenkins/
+├── docs/
+│   ├── architecture/
+│   ├── ai-assessment/
+│   ├── screenshots/
+│   ├── pipeline-diagrams/
+│   └── troubleshooting/
+└── README.md
+```
+
+## Architecture
+
+> Architecture diagram will be added here.
+
+The solution provisions AWS infrastructure using Terraform, deploys applications to Amazon EKS through GitHub Actions, and generates AI-powered deployment assessments using the OpenAI API.
+
+## Screenshots
+
+Screenshots will include:
+
+- Infrastructure Deployment Pipeline
+- Application Deployment Pipeline
+- AI Infrastructure Assessment
+- AI Kubernetes Assessment
+- Amazon EKS Cluster
+- Kubernetes Workloads
 
 ## CI/CD Pipelines
 
