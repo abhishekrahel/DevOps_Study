@@ -1,0 +1,98 @@
+name: Provision AWS Infrastructure AI powered 
+
+on:
+  # push:
+  #   branches:
+  #     - master
+  workflow_dispatch:
+
+jobs:
+  infra_terraform:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: Projects/EKS-Cluster
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Format Check
+        run: terraform fmt -check
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform Plan
+        run: terraform plan -out=tfplan -var-file="input.tfvars"
+
+      # - name: Manual Approval
+      #   uses: trstringer/manual-approval@v1
+      #   with:
+      #     secret: ${{ secrets.GITHUB_TOKEN }}
+      #     approvers: abhishekrahel
+
+      - name: Terraform Apply
+        id: tf_apply
+        continue-on-error: true
+        run: |
+          terraform apply -auto-approve tfplan 2>&1 | tee terraform_error.log
+
+      - name: Check Terraform Result
+        if: always()
+        run: |
+          if grep -q "Apply complete!" terraform_error.log; then
+            echo "Terraform Apply Successful"
+          else
+            echo "Terraform Apply Failed"
+            exit 1
+          fi
+
+      - name: Create Failure Prompt
+        if: failure()
+        run: |
+          cat <<EOF > failure_prompt.txt
+          You are a Senior AWS DevOps Engineer.
+
+          Analyze the following Terraform deployment failure.
+
+          Return markdown with:
+
+          # Root Cause
+
+          # Why it happened
+
+          # Recommended Fix
+
+          # Commands to Verify
+
+          Terraform Error:
+
+          EOF
+
+          cat terraform_error.log >> failure_prompt.txt
+
+      - name: Publish AI Failure Analysis
+        if: failure()
+        run: |
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "# 🤖 AI Failure Analysis" >> $GITHUB_STEP_SUMMARY
+          cat ai_failure.md >> $GITHUB_STEP_SUMMARY
+
+
+
+      
