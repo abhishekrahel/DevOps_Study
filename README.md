@@ -1,6 +1,9 @@
 # DevOps Study
 
-Enterprise-grade DevOps portfolio showcasing AWS, Terraform, Kubernetes, GitHub Actions, Jenkins, Docker, and AI-powered CI/CD automation.
+An enterprise-style DevOps portfolio demonstrating end-to-end Infrastructure as Code (IaC), CI/CD automation, Kubernetes deployments on Amazon EKS, and AI-powered operational assessments.
+
+The repository showcases production-oriented DevOps practices including Terraform modules, GitHub Actions, Docker, Amazon ECR, Amazon EKS, Kubernetes, security scanning with tfsec, environment approval workflows, and AI-assisted deployment analysis.
+
 
 ## Technologies
 
