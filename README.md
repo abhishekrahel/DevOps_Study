@@ -4,6 +4,19 @@ DevOps Study is a production-oriented DevOps portfolio that demonstrates the des
 
 The repository showcases enterprise-style Infrastructure as Code, CI/CD automation, Kubernetes orchestration, containerization, security scanning, and AI-assisted deployment intelligence through GitHub Actions.
 
+## Portfolio Highlights
+
+- Enterprise-style AWS Infrastructure using Terraform Modules
+- Remote Terraform State with State Locking
+- Multi-Environment Deployments (Dev, QA, Production)
+- Amazon EKS Cluster Provisioning
+- Kubernetes Application Deployment
+- Docker Image Build & Amazon ECR Integration
+- GitHub Actions CI/CD Pipelines
+- AI-powered Infrastructure Assessment
+- AI-powered Kubernetes Assessment
+- Security Scanning using tfsec
+
 ## Table of Contents
 
 - [Project Overview](#project-overview)
@@ -15,7 +28,6 @@ The repository showcases enterprise-style Infrastructure as Code, CI/CD automati
 - [Repository Structure](#repository-structure)
 - [Architecture](#architecture)
 - [Screenshots](#screenshots)
-- [Future Enhancements](#future-enhancements)
 
 
 ## Project Overview
@@ -56,7 +68,7 @@ The objective is to simulate enterprise DevOps workflows that are commonly used 
 | tfsec Security Gate | ✅ |
 | Manual Approval | ✅ |
 
-## ## Technology Stack
+## Technology Stack
 
 | Category               | Technologies            |
 | ---------------------- | ----------------------- |
@@ -68,6 +80,28 @@ The objective is to simulate enterprise DevOps workflows that are commonly used 
 | Orchestration          | Amazon EKS, Kubernetes  |
 | Security               | tfsec                   |
 | AI                     | OpenAI API              |
+
+## CI/CD Pipelines
+
+- AI Infrastructure Deployment Pipeline
+- AI Kubernetes Deployment Pipeline
+- Environment Approval Workflow
+- Docker to Amazon ECR Pipeline
+- Terraform Security Gate
+
+## AI Features
+
+The repository integrates the OpenAI API into GitHub Actions to generate deployment intelligence.
+
+Current capabilities include:
+
+- AI Infrastructure Assessment
+- AI Kubernetes Assessment
+- Infrastructure Health Analysis
+- Deployment Recommendations
+- Kubernetes Best Practices
+- Operational Risk Detection
+
 
 ## Repository Structure
 
@@ -106,23 +140,4 @@ Screenshots will include:
 - Amazon EKS Cluster
 - Kubernetes Workloads
 
-## CI/CD Pipelines
 
-- AI Infrastructure Deployment Pipeline
-- AI Kubernetes Deployment Pipeline
-- Environment Approval Workflow
-- Docker to Amazon ECR Pipeline
-- Terraform Security Gate
-
-## AI Features
-
-The repository integrates the OpenAI API into GitHub Actions to generate deployment intelligence.
-
-Current capabilities include:
-
-- AI Infrastructure Assessment
-- AI Kubernetes Assessment
-- Infrastructure Health Analysis
-- Deployment Recommendations
-- Kubernetes Best Practices
-- Operational Risk Detection
