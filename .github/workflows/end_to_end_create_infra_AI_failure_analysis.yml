@@ -89,7 +89,7 @@ jobs:
       - name: Simulate Failure
         if: ${{ inputs.simulate_failure == 'true' }}
         run: |
-         sed -i 's/t3.medium/t3.invalid/' input.tfvars    
+         sed -i 's/t3.small/t3.invalid/' input.tfvars    
 
       - name: Terraform Plan
         run: terraform plan -out=tfplan -var-file="input.tfvars"
