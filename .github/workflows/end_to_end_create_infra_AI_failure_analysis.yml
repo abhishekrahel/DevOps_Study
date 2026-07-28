@@ -5,6 +5,15 @@ on:
   #   branches:
   #     - master
   workflow_dispatch:
+    inputs:
+      simulate_failure:
+        description: "Simulate Infrastructure Failure"
+        required: true
+        default: "false"
+        type: choice
+        options:
+          - "false"
+          - "true"
 
 jobs:
   infra_failure_analysis:
@@ -76,6 +85,11 @@ jobs:
           echo ""
           echo "Looking for input.tfvars:"
           find . -name "input.tfvars"
+
+      - name: Simulate Failure
+        if: ${{ inputs.simulate_failure == 'true' }}
+        run: |
+         sed -i 's/t3.medium/t3.invalid/' input.tfvars    
 
       - name: Terraform Plan
         run: terraform plan -out=tfplan -var-file="input.tfvars"
