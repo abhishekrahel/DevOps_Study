@@ -2,37 +2,72 @@
 
 ## Objective
 
-Automatically analyze Terraform deployment failures.
+Automatically analyze failed Terraform infrastructure deployments using GitHub Actions and OpenAI. The workflow captures Terraform errors, generates an AI-powered root cause analysis, and publishes the results directly in the GitHub Actions Job Summary.
+
+---
+
+## Workflow
+
+```
+Terraform Apply
+      │
+      ▼
+Deployment Failure
+      │
+      ▼
+terraform_error.log
+      │
+      ▼
+Generate AI Prompt
+      │
+      ▼
+OpenAI API
+      │
+      ▼
+AI Root Cause Analysis
+      │
+      ▼
+GitHub Actions Job Summary
+```
+
+---
 
 ## Features
 
-- Detects Terraform failure
-- Captures error log
-- Sends prompt to OpenAI
-- Generates Root Cause
-- Suggests Fixes
-- Provides Verification Commands
+- Detects failed Terraform deployments automatically
+- Captures Terraform error logs
+- Generates an AI prompt from the failure
+- Sends the prompt to the OpenAI API
+- Produces:
+  - Root Cause Analysis
+  - Failure Explanation
+  - Recommended Fixes
+  - Verification Commands
+- Publishes the AI analysis directly in the GitHub Actions Job Summary
 
-## Example
+---
 
-Terraform Apply
+## Technologies Used
 
-↓
+- GitHub Actions
+- Terraform
+- AWS
+- OpenAI API
+- Bash
+- jq
 
-Failure Detected
+---
 
-↓
+## Sample Output
 
-terraform_error.log
+A text version of the generated AI report is available in:
 
-↓
+- `sample-output.md`
 
-OpenAI API
+---
 
-↓
+## Workflow Output
 
-AI Failure Analysis
+Example of the AI-generated Infrastructure Failure Analysis.
 
-↓
-
-GitHub Job Summary
+![Infrastructure Failure Analysis](images/infra-failure-analysis.png)

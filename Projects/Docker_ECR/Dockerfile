@@ -21,13 +21,13 @@ FROM alpine:latest AS builder
 
 WORKDIR /app
 
-COPY index.html .
+COPY sample-app/index.html .
 
 # Stage 2 - Runtime Stage
 
 FROM nginx:latest
 
-COPY --from=builder /app/index.html /usr/share/nginx/html/index.html
+COPY --from=builder /app/sample-app/index.html /usr/share/nginx/html/index.html
 
 EXPOSE 80
 
