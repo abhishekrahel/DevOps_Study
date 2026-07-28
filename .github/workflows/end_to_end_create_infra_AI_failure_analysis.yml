@@ -106,23 +106,23 @@ jobs:
         if: failure()
         run: |
           cat <<EOF > failure_prompt.txt
-You are a Senior AWS DevOps Engineer.
+          You are a Senior AWS DevOps Engineer.
 
-Analyze the following Terraform deployment failure.
+          Analyze the following Terraform deployment failure.
 
-Return markdown with:
+         Return markdown with:
 
-# Root Cause
+        # Root Cause
 
-# Why it happened
+        # Why it happened
 
-# Recommended Fix
+        # Recommended Fix
 
-# Commands to Verify
+        # Commands to Verify
 
-Terraform Error:
+         Terraform Error:
 
-EOF
+          EOF
 
           cat terraform_error.log >> failure_prompt.txt
 
