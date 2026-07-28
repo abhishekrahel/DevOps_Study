@@ -1,11 +1,11 @@
 module "vpc" {
-  source   = "../Terraform/networking/Network_Compute_Modular.Project/modules/vpc"
+  source   = "../Terraform/Modules/vpc"
   vpc_cidr = var.vpc_cidr
 }
 
 
 module "subnet" {
-  source = "../Terraform/networking/Network_Compute_Modular.Project/modules/subnet"
+  source = "../Terraform/Modules/subnet"
 
   vpc_id           = module.vpc.vpc_id
   pub_subnet_cidr  = var.pub_subnet_cidr
@@ -17,26 +17,26 @@ module "subnet" {
 
 module "igw" {
 
-  source = "../Terraform/networking/Network_Compute_Modular.Project/modules/igw"
+  source = "../Terraform/Modules/igw"
 
   vpc_id = module.vpc.vpc_id
 }
 
 module "eip" {
 
-  source = "../Terraform/networking/Network_Compute_Modular.Project/modules/eip"
+  source = "../Terraform/Modules/eip"
 
 }
 
 module "nat_gateway" {
-  source = "../Terraform/networking/Network_Compute_Modular.Project/modules/nat_gateway"
+  source = "../Terraform/Modules/nat_gateway"
 
   eip_allocation_id = module.eip.eip_id
   subnet_id         = module.subnet.public_subnet_ids
 }
 
 module "pub_route_table" {
-  source = "../Terraform/networking/Network_Compute_Modular.Project/modules/pub_route_table"
+  source = "../Terraform/Modules/pub_route_table"
 
   vpc_id = module.vpc.vpc_id
   igw    = module.igw.igw_id
@@ -44,7 +44,7 @@ module "pub_route_table" {
 }
 
 module "priv_route_table" {
-  source = "../Terraform/networking/Network_Compute_Modular.Project/modules/priv_route_table"
+  source = "../Terraform/Modules/priv_route_table"
 
   vpc_id    = module.vpc.vpc_id
   nat_gw_id = module.nat_gateway.nat_gw_id
@@ -53,28 +53,28 @@ module "priv_route_table" {
 
 module "pub_asso_rt" {
 
-  source                = "../Terraform/networking/Network_Compute_Modular.Project/modules/pub_asso_rt"
+  source                = "../Terraform/Modules/pub_asso_rt"
   public_subnet_ids     = module.subnet.public_subnet_ids
   public_route_table_id = module.pub_route_table.pub_route_table_id
 }
 
 module "priv_asso_rt" {
 
-  source                 = "../Terraform/networking/Network_Compute_Modular.Project/modules/priv_asso_rt"
+  source                 = "../Terraform/Modules/priv_asso_rt"
   private_subnet_ids     = module.subnet.private_subnet_ids
   private_route_table_id = module.priv_route_table.route_table_id
 }
 
 module "security_group" {
 
-  source = "../Terraform/networking/Network_Compute_Modular.Project/modules/security_group"
+  source = "../Terraform/Modules/security_group"
   vpc_id = module.vpc.vpc_id
 
 }
 
 
 module "eks" {
-  source = "../Terraform/networking/Network_Compute_Modular.Project/modules/eks"
+  source = "../Terraform/Modules/eks"
 
 
   cluster_name = "${var.environment}-eks-cluster"
@@ -92,7 +92,7 @@ module "eks" {
 }
 
 module "ecr" {
-  source       = "../Terraform/networking/Network_Compute_Modular.Project/modules/ecr"
+  source       = "../Terraform/modules/ecr"
   repo_name    = "${var.environment}-nginx-repo"
   scan_on_push = true
 }

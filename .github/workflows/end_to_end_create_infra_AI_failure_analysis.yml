@@ -12,7 +12,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: Projects/Terraform/Modules
+        working-directory: Projects/EKS-Cluster/Terraform
 
     steps:
       - name: Checkout Code
