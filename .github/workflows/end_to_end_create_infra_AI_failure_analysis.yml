@@ -89,7 +89,7 @@ jobs:
       - name: Simulate Failure
         if: ${{ inputs.simulate_failure == 'true' }}
         run: |
-         sed -i 's/t3.small/t3.invalid/' input.tfvars    
+          sed -i 's/t3.small/t3.invalid/' input.tfvars
 
       - name: Terraform Plan
         run: terraform plan -out=tfplan -var-file="input.tfvars"
@@ -148,36 +148,45 @@ jobs:
           PROMPT=$(cat failure_prompt.txt)
 
           curl https://api.openai.com/v1/responses \
-          -H "Authorization: Bearer $OPENAI_API_KEY" \
-          -H "Content-Type: application/json" \
-          -d "$(jq -n \
-           --arg model "gpt-5-mini" \
-           --arg input "$PROMPT" \
-           '{
-          model: $model,
-          input: $input
-           }')" \
-          > ai_response.json
+            -H "Authorization: Bearer $OPENAI_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d "$(jq -n \
+              --arg model "gpt-5-mini" \
+              --arg input "$PROMPT" \
+              '{
+                model: $model,
+                input: $input
+              }')" \
+            > ai_response.json
+
+      - name: Show AI Response
+        if: failure()
+        run: |
+          echo "======================"
+          cat ai_response.json
+          echo "======================"
 
       - name: Extract AI Summary
+        if: failure()
         run: |
           jq -r '
             .output[]
-            | select(.type=="message")
-            | .content[]
-            | select(.type=="output_text")
-            | .text
+            |  select(.type=="message")
+            |  .content[]
+            |  select(.type=="output_text")
+            |  .text
           ' ai_response.json > ai_failure.md
 
-
+          echo "===== Extracted ====="
+          cat ai_failure.md
 
       - name: Publish AI Failure Analysis
         if: failure()
         run: |
-         echo "" >> $GITHUB_STEP_SUMMARY
-         echo "---" >> $GITHUB_STEP_SUMMARY
-         echo "# 🤖 AI Infrastructure Failure Analysis" >> $GITHUB_STEP_SUMMARY
-         cat ai_failure.md >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "# 🤖 AI Infrastructure Failure Analysis" >> $GITHUB_STEP_SUMMARY
+          cat ai_failure.md >> $GITHUB_STEP_SUMMARY
 
 
 
