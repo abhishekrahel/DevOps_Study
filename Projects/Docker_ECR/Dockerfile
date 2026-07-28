@@ -27,7 +27,7 @@ COPY sample-app/index.html .
 
 FROM nginx:latest
 
-COPY --from=builder /app/sample-app/index.html /usr/share/nginx/html/index.html
+COPY --from=builder /app/index.html /usr/share/nginx/html/index.html
 
 EXPOSE 80
 
