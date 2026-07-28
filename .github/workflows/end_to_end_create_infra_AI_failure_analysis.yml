@@ -126,13 +126,22 @@ jobs:
 
           Return markdown with:
 
-          # Root Cause
 
-          # Why it happened
+          ## Root Cause
 
-          # Recommended Fix
+          ...
 
-          # Commands to Verify
+          ## Why it happened
+
+          ...
+
+          ## Recommended Fix
+
+          ...
+
+          ## Verification Commands
+
+          ...
 
           Terraform Error:
 
