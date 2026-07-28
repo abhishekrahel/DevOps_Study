@@ -92,7 +92,7 @@ module "eks" {
 }
 
 module "ecr" {
-  source       = "../../Terraform/modules/ecr"
+  source       = "../../Terraform/Modules/ecr"
   repo_name    = "${var.environment}-nginx-repo"
   scan_on_push = true
 }
