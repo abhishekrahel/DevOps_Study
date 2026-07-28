@@ -18,6 +18,11 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Repository Structure
+        run: |
+             pwd
+             find . -name input.tfvars  
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
@@ -36,6 +41,19 @@ jobs:
 
       - name: Terraform Validate
         run: terraform validate
+
+      - name: Debug Working Directory
+        run: |
+             echo "Current Directory:"
+             pwd
+
+             echo ""
+             echo "Files:"
+             ls -la
+
+             echo ""
+             echo "Terraform files:"
+             find . -maxdepth 1 -type f  
 
       - name: Terraform Plan
         run: terraform plan -out=tfplan -var-file="input.tfvars"
