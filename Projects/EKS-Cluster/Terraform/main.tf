@@ -1,11 +1,11 @@
 module "vpc" {
-  source   = "../Terraform/Modules/vpc"
+  source   = "../../Terraform/Modules/vpc"
   vpc_cidr = var.vpc_cidr
 }
 
 
 module "subnet" {
-  source = "../Terraform/Modules/subnet"
+  source = "../../Terraform/Modules/subnet"
 
   vpc_id           = module.vpc.vpc_id
   pub_subnet_cidr  = var.pub_subnet_cidr
