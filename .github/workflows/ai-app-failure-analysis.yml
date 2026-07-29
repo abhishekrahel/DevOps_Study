@@ -27,7 +27,7 @@ jobs:
       - name: Collect Kubernetes Failure Diagnostics
         run: |
           chmod +x scripts/collect_failure_data.sh
-          ./scripts/collect_failure_data.sh
+          ./Projects/CI-CD/GitHub-Actions/AI/AI_App_Failure_Analysis/scripts/collect_failure_data.sh
 
       - name: Display Diagnostics
         run: |
