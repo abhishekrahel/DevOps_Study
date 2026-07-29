@@ -1,0 +1,165 @@
+name: Application Deployment AI
+
+on:
+  # push:
+  #   branches:
+  #     - main
+  #     - dev
+  workflow_dispatch:
+
+jobs:
+  app_deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      ENVIRONMENT: dev
+      AWS_REGION: us-east-1
+      AWS_ACCOUNT_ID: 449957914366
+      ECR_REPOSITORY: dev-nginx-repo
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Build Image
+        run: docker build -f Projects/Docker_ECR/Dockerfile -t web_server Projects/Docker_ECR
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Tag Image
+        run: |
+          docker tag web_server:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY
+
+      - name: Push Image
+        run: |
+          docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPOSITORY:latest
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v4
+
+      - name: Configure kubeconfig
+        run: |
+          aws eks update-kubeconfig --region $AWS_REGION --name ${ENVIRONMENT}-eks-cluster
+
+      - name: Deploy to EKS
+        run: |
+          kubectl apply -f Projects/EKS-Cluster/Kubernetes/namespace.yml
+          kubectl apply -f Projects/EKS-Cluster/Kubernetes/deployment.yml
+          kubectl apply -f Projects/EKS-Cluster/Kubernetes/service.yml
+
+      - name: Verify Deployment
+        run: |
+          kubectl rollout status deployment/html-app -n qa
+          kubectl get pods -n qa
+          kubectl get svc -n qa
+          kubectl describe deployment html-app -n qa
+
+      # - name: Collect Kubernetes Status
+      #   run: |
+      #     kubectl get nodes -o json > nodes.json
+      #     kubectl get pods -A -o json > pods.json
+      #     kubectl get svc -A -o json > services.json
+      # - name: Create Kubernetes Summary
+      #   run: |
+      #     echo "Environment: dev" > k8s_summary.txt
+      #     echo "" >> k8s_summary.txt
+
+      #     echo "Nodes:" >> k8s_summary.txt
+      #     kubectl get nodes >> k8s_summary.txt
+
+      #     echo "" >> k8s_summary.txt
+      #     echo "Pods:" >> k8s_summary.txt
+      #     kubectl get pods -A >> k8s_summary.txt
+
+      #     echo "" >> k8s_summary.txt
+      #     echo "Services:" >> k8s_summary.txt
+      #     kubectl get svc -A >> k8s_summary.txt
+
+      # - name: Verify OpenAI Secret
+      #   env:
+      #     OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      #   run: |
+      #     if [ -z "$OPENAI_API_KEY" ]; then
+      #       echo "❌ Secret not found"
+      #       exit 1
+      #     else
+      #       echo "✅ OpenAI Secret Found"
+      #     fi
+
+      # - name: Create AI Prompt
+      #   run: |
+      #     cat <<EOF > prompt.txt
+      #     You are a Senior Kubernetes DevOps Engineer.
+
+          
+
+      #     This is a DEVELOPMENT environment.
+
+      #     Analyze ONLY the Kubernetes status below.
+
+      #     Return markdown with these sections:
+
+      #     # 🚀 Deployment Summary
+      #     Maximum 4 bullet points.
+
+      #     # ✅ Health
+      #     Maximum 4 bullet points.
+
+      #     # ⚠️ Top Risks
+      #     Maximum 3 bullet points.
+
+      #     # 💡 Top Recommendations
+      #     Maximum 5 bullet points.
+
+      #     Keep the entire response under 300 words.
+
+      #     Do not generate YAML or kubectl commands unless there is a critical issue.
+      #     Kubernetes Status:
+
+      #     EOF
+
+      #     cat k8s_summary.txt >> prompt.txt
+
+      # - name: Generate AI Deployment Summary
+      #   env:
+      #     OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      #   run: |
+      #     PROMPT=$(cat prompt.txt)
+
+      #     curl -s https://api.openai.com/v1/responses \
+      #       -H "Authorization: Bearer $OPENAI_API_KEY" \
+      #       -H "Content-Type: application/json" \
+      #       -d "$(jq -n \
+      #         --arg model "gpt-5-mini" \
+      #         --arg input "$PROMPT" \
+      #         '{model:$model,input:$input}')" \
+      #       > ai_response.json
+
+      # - name: Show AI Response
+      #   run: |
+      #     cat ai_response.json | jq
+
+      # - name: Extract AI Summary
+      #   run: |
+      #     jq -r '
+      #       .output[]
+      #       | select(.type=="message")
+      #       | .content[]
+      #       | select(.type=="output_text")
+      #       | .text
+      #     ' ai_response.json > ai_summary.md
+
+      # - name: Publish AI Summary
+      #   run: |
+      #     echo "" >> $GITHUB_STEP_SUMMARY
+      #     echo "---" >> $GITHUB_STEP_SUMMARY
+      #     echo "# 🤖 AI Kubernetes Assessment" >> $GITHUB_STEP_SUMMARY
+      #     cat ai_summary.md >> $GITHUB_STEP_SUMMARY
