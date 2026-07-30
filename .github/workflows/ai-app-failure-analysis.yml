@@ -30,6 +30,28 @@ jobs:
           chmod +x scripts/collect_failure_data.sh
           ./scripts/collect_failure_data.sh
           cat failure-data.txt
-    #   - name: Display Diagnostics
-    #     run: |
-    #       cat failure-data.txt
+      - name: Generate AI Prompt
+        run: |
+          cd Projects/CI-CD/GitHub-Actions/AI/AI_App_Failure_Analysis
+
+          cp prompts/prompt.md final-prompt.txt
+
+          echo "" >> final-prompt.txt
+          echo "======================================================" >> final-prompt.txt
+          echo "KUBERNETES DIAGNOSTICS" >> final-prompt.txt
+          echo "======================================================" >> final-prompt.txt
+          echo "" >> final-prompt.txt
+
+          cat failure-data.txt >> final-prompt.txt
+      - name: Display AI Prompt
+        run: |
+          cd Projects/CI-CD/GitHub-Actions/AI/AI_App_Failure_Analysis
+          cat final-prompt.txt
+
+      - name: Upload Diagnostics
+        uses: actions/upload-artifact@v4
+        with:
+           name: kubernetes-failure-diagnostics
+           path: |
+              Projects/CI-CD/GitHub-Actions/AI/AI_App_Failure_Analysis/failure-data.txt
+              Projects/CI-CD/GitHub-Actions/AI/AI_App_Failure_Analysis/final-prompt.txt
