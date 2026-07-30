@@ -73,15 +73,18 @@ jobs:
         run: |
           cd Projects/CI-CD/GitHub-Actions/AI/AI_App_Failure_Analysis
 
-          PROMPT=$(cat final-prompt.txt)
+           PROMPT=$(cat final-prompt.txt)
 
-          curl https://api.openai.com/v1/responses \
+           curl https://api.openai.com/v1/responses \
             -H "Authorization: Bearer $OPENAI_API_KEY" \
             -H "Content-Type: application/json" \
             -d "$(jq -n \
-              --arg model \"gpt-5-mini\" \
-              --arg input \"$PROMPT\" \
-              '{\n+                model: $model,\n+                input: $input\n+              }')" \
+              --arg model "gpt-5-mini" \
+              --arg input "$PROMPT" \
+              '{
+                model: $model,
+                input: $input
+              }')" \
             > ai_response.json
 
       - name: Show AI Response
