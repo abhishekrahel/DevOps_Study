@@ -55,3 +55,69 @@ jobs:
            path: |
               Projects/CI-CD/GitHub-Actions/AI/AI_App_Failure_Analysis/failure-data.txt
               Projects/CI-CD/GitHub-Actions/AI/AI_App_Failure_Analysis/final-prompt.txt
+
+      - name: Read Final Prompt
+        id: read_prompt
+        run: |
+          cd Projects/CI-CD/GitHub-Actions/AI/AI_App_Failure_Analysis
+
+          {
+             echo "PROMPT<<EOF"
+             cat final-prompt.txt
+             echo "EOF"
+          } >> $GITHUB_OUTPUT
+
+      - name: Generate AI Failure Analysis
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          cd Projects/CI-CD/GitHub-Actions/AI/AI_App_Failure_Analysis
+
+          PROMPT=$(cat final-prompt.txt)
+
+          curl https://api.openai.com/v1/responses \
+            -H "Authorization: Bearer $OPENAI_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d "$(jq -n \
+              --arg model \"gpt-5-mini\" \
+              --arg input \"$PROMPT\" \
+              '{\n+                model: $model,\n+                input: $input\n+              }')" \
+            > ai_response.json
+
+      - name: Show AI Response
+        run: |
+          cd Projects/CI-CD/GitHub-Actions/AI/AI_App_Failure_Analysis
+          cat ai_response.json
+
+      - name: Extract AI Report
+        run: |
+          cd Projects/CI-CD/GitHub-Actions/AI/AI_App_Failure_Analysis
+
+          jq -r '
+            .output[]
+            | select(.type=="message")
+            | .content[]
+            | select(.type=="output_text")
+            | .text
+          ' ai_response.json > ai_report.md
+
+      - name: Publish AI Failure Analysis
+        run: |
+          cd Projects/CI-CD/GitHub-Actions/AI/AI_App_Failure_Analysis
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "# 🤖 AI Kubernetes Application Failure Analysis" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          cat ai_report.md >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload AI Analysis Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-app-failure-analysis
+          path: |
+            Projects/CI-CD/GitHub-Actions/AI/AI_App_Failure_Analysis/failure-data.txt
+            Projects/CI-CD/GitHub-Actions/AI/AI_App_Failure_Analysis/final-prompt.txt
+            Projects/CI-CD/GitHub-Actions/AI/AI_App_Failure_Analysis/ai_response.json
+            Projects/CI-CD/GitHub-Actions/AI/AI_App_Failure_Analysis/ai_report.md
