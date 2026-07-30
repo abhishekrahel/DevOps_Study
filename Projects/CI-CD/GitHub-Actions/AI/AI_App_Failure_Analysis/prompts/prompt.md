@@ -34,8 +34,6 @@ Important Guidelines:
 - If information is missing, explicitly mention it.
 - Format the response in Markdown suitable for a GitHub Actions Job Summary.
 
-Kubernetes Diagnostics:
-
-```
-{{FAILURE_DATA}}
+The Kubernetes diagnostics begin below.
+Analyze them carefully and generate the report.
 ```
