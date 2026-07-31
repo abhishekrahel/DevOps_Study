@@ -66,23 +66,25 @@ jobs:
         run: terraform apply --auto-approve tfplan
 
       - name: Collect Cost Data
+        working-directory: Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization
         run: |
-          cd Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization
-
+          
           chmod +x scripts/collect_cost_data.sh
           ./scripts/collect_cost_data.sh
           cat cost-data.txt
       - name: Create Final Prompt
+        working-directory: Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization
         run: |
-          cd Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization
+          
 
 
           cat prompts/prompt.md > final-prompt.txt
           echo "" >> final-prompt.txt
           cat cost-data.txt >> final-prompt.txt
       - name: Display AI Prompt
+        working-directory: Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization
         run: |
-          cd Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization
+          
 
           cat final-prompt.txt
 
@@ -106,10 +108,11 @@ jobs:
       #     } >> $GITHUB_OUTPUT
 
       - name: Generate AI Cost Optimization Report
+        working-directory: Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
-          cd Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization
+          
 
            PROMPT=$(cat final-prompt.txt)
 
@@ -126,18 +129,21 @@ jobs:
             > ai_response.json
 
       - name: Show AI Response
+        working-directory: Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization
         run: |
-          cd  Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization
+          
           cat ai_response.json
 
           - name: Pretty Print AI Response
+            working-directory: Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization
             run: |
-              cd Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization
+              
               jq . ai_response.json
 
       - name: Extract AI Report
+        working-directory: Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization
         run: |
-          cd Projects/CI-CD/GitHub-Actions/AI/AI_App_Failure_Analysis
+          
 
           jq -r '
             .output[]
@@ -148,8 +154,9 @@ jobs:
           ' ai_response.json > ai_cost_report.md
 
       - name: Publish AI Failure Analysis
+        working-directory: Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization
         run: |
-          cd Projects/CI-CD/GitHub-Actions/AI/AI_App_Failure_Analysis
+          
 
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "---" >> $GITHUB_STEP_SUMMARY
