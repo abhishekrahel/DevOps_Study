@@ -1,4 +1,4 @@
-name: Application Deployment AI
+name: Application Deployment 
 
 on:
   # push:
