@@ -162,7 +162,7 @@ jobs:
       - name: Upload AI Analysis Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ai-app-failure-analysis
+          name: ai-app-cost-optimization-analysis
           path: |
             Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization/cost-data.txt
             Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization/final-prompt.txt

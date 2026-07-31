@@ -6,7 +6,7 @@ Generate a professional Markdown report suitable for a GitHub Actions Job Summar
 
 Include the following sections:
 
-# AI AWS Cost Optimization Report
+# 🤖 AI AWS Cost Optimization Report
 
 ## Infrastructure Summary
 
