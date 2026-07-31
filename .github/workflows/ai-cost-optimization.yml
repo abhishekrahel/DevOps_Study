@@ -88,13 +88,13 @@ jobs:
 
           cat final-prompt.txt
 
-      - name: Upload Diagnostics
-        uses: actions/upload-artifact@v4
-        with:
-           name: aws-cost-optimization-diagnostics
-           path: |
-              Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization/cost-data.txt
-              Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization/final-prompt.txt
+      # - name: Upload Diagnostics
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #      name: aws-cost-optimization-diagnostics
+      #      path: |
+      #         Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization/cost-data.txt
+      #         Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization/final-prompt.txt
 
       # - name: Read Final Prompt
       #   id: read_prompt
@@ -153,7 +153,7 @@ jobs:
         working-directory: Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization
         run: |
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "---" >> $GITHUB_STEP_SUMMARY
+          # echo "---" >> $GITHUB_STEP_SUMMARY
           # echo "# 🤖 AI Kubernetes Application Failure Analysis" >> $GITHUB_STEP_SUMMARY
           # echo "" >> $GITHUB_STEP_SUMMARY
 
