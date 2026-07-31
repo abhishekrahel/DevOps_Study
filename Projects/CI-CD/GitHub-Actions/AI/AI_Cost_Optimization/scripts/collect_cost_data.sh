@@ -30,7 +30,8 @@ echo "========================================" >> "$OUTPUT_FILE"
 echo "AWS Region" >> "$OUTPUT_FILE"
 echo "========================================" >> "$OUTPUT_FILE"
 
-aws configure get region >> "$OUTPUT_FILE"
+# aws configure get region >> "$OUTPUT_FILE"
+echo "${AWS_REGION:-$AWS_DEFAULT_REGION}" >> "$OUTPUT_FILE"
 
 ###############################################
 echo "" >> "$OUTPUT_FILE"
