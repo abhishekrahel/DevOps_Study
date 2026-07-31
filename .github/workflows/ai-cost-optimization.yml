@@ -154,7 +154,17 @@ jobs:
         run: |
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "---" >> $GITHUB_STEP_SUMMARY
-          echo "# 🤖 AI Kubernetes Application Failure Analysis" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
+          # echo "# 🤖 AI Kubernetes Application Failure Analysis" >> $GITHUB_STEP_SUMMARY
+          # echo "" >> $GITHUB_STEP_SUMMARY
 
           cat ai_cost_report.md >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload AI Analysis Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-app-failure-analysis
+          path: |
+            Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization/cost-data.txt
+            Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization/final-prompt.txt
+            Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization/ai_response.json
+            Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization/ai_report.md     
