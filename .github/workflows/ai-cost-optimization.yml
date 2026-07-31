@@ -1,4 +1,4 @@
-name: Provision AWS Infrastructure
+name: Cost Optimization for Provisioned AWS Infrastructure
 
 on:
   # push:
@@ -7,7 +7,7 @@ on:
   workflow_dispatch:     
 
 jobs:
-  infra_terraform:
+  cost_optimize_infra:
 
   
     
