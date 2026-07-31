@@ -167,4 +167,4 @@ jobs:
             Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization/cost-data.txt
             Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization/final-prompt.txt
             Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization/ai_response.json
-            Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization/ai_report.md     
+            Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization/ai_cost_report.md     
