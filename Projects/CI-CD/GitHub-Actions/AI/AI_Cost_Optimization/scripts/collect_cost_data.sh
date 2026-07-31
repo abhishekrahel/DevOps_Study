@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -ex
 
 OUTPUT_FILE="cost-data.txt"
 
