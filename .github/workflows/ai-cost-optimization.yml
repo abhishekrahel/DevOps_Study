@@ -13,20 +13,21 @@ jobs:
     
     runs-on: ubuntu-latest
 
-    defaults: 
-      run:
-        working-directory: Projects/EKS-Cluster/Terraform
+    # defaults: 
+    #   run:
+    #     # working-directory: Projects/EKS-Cluster/Terraform
 
     steps:
 
       - name: Checkout Code
         uses: actions/checkout@v4
-      - name: Debug Repository Structure
-        run: |
-           pwd
-           ls -la
-           echo "----------------------------"
-           find . -maxdepth 4 -type d
+
+      # - name: Debug Repository Structure
+      #   run: |
+      #      pwd
+      #      ls -la
+      #      echo "----------------------------"
+      #      find . -maxdepth 4 -type d
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -39,15 +40,19 @@ jobs:
           aws-region: us-east-1
 
       - name: Terraform Init 
+        working-directory: Projects/EKS-Cluster/Terraform
         run: terraform init
 
       - name: Terraform Format Check 
+        working-directory: Projects/EKS-Cluster/Terraform
         run: terraform fmt -check
 
       - name: Terraform Validate 
+        working-directory: Projects/EKS-Cluster/Terraform
         run: terraform validate
 
       - name: Terraform Plan 
+        working-directory: Projects/EKS-Cluster/Terraform
         run: terraform plan -out=tfplan -var-file="input.tfvars"
 
     # - name: Manual Approval
@@ -56,7 +61,8 @@ jobs:
     #     secret: ${{ secrets.GITHUB_TOKEN }}
     #     approvers: abhishekrahel
 
-      - name: Terraform Apply      
+      - name: Terraform Apply  
+        working-directory: Projects/EKS-Cluster/Terraform    
         run: terraform apply --auto-approve tfplan
 
       - name: Collect Cost Data
