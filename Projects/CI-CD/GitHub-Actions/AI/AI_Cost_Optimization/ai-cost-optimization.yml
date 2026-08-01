@@ -1,0 +1,170 @@
+name: Cost Optimization for Provisioned AWS Infrastructure
+
+on:
+  # push:
+  #   branches:
+  #     - master
+  workflow_dispatch:     
+
+jobs:
+  cost_optimize_infra:
+
+  
+    
+    runs-on: ubuntu-latest
+
+    # defaults: 
+    #   run:
+    #     # working-directory: Projects/EKS-Cluster/Terraform
+
+    steps:
+
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # - name: Debug Repository Structure
+      #   run: |
+      #      pwd
+      #      ls -la
+      #      echo "----------------------------"
+      #      find . -maxdepth 4 -type d
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Terraform Init 
+        working-directory: Projects/EKS-Cluster/Terraform
+        run: terraform init
+
+      - name: Terraform Format Check 
+        working-directory: Projects/EKS-Cluster/Terraform
+        run: terraform fmt -check
+
+      - name: Terraform Validate 
+        working-directory: Projects/EKS-Cluster/Terraform
+        run: terraform validate
+
+      - name: Terraform Plan 
+        working-directory: Projects/EKS-Cluster/Terraform
+        run: terraform plan -out=tfplan -var-file="input.tfvars"
+
+    # - name: Manual Approval
+    #   uses: trstringer/manual-approval@v1
+    #   with:
+    #     secret: ${{ secrets.GITHUB_TOKEN }}
+    #     approvers: abhishekrahel
+
+      - name: Terraform Apply  
+        working-directory: Projects/EKS-Cluster/Terraform    
+        run: terraform apply --auto-approve tfplan
+
+      - name: Collect Cost Data
+        working-directory: Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization
+        run: |
+          
+          chmod +x scripts/collect_cost_data.sh
+          ./scripts/collect_cost_data.sh
+          cat cost-data.txt
+      - name: Create Final Prompt
+        working-directory: Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization
+        run: |
+          
+
+
+          cat prompts/prompt.md > final-prompt.txt
+          echo "" >> final-prompt.txt
+          cat cost-data.txt >> final-prompt.txt
+      - name: Display AI Prompt
+        working-directory: Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization
+        run: |
+          
+
+          cat final-prompt.txt
+
+      # - name: Upload Diagnostics
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #      name: aws-cost-optimization-diagnostics
+      #      path: |
+      #         Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization/cost-data.txt
+      #         Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization/final-prompt.txt
+
+      # - name: Read Final Prompt
+      #   id: read_prompt
+      #   run: |
+      #     cd Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization
+
+      #     {
+      #        echo "PROMPT<<EOF"
+      #        cat final-prompt.txt
+      #        echo "EOF"
+      #     } >> $GITHUB_OUTPUT
+
+      - name: Generate AI Cost Optimization Report
+        working-directory: Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          
+
+           PROMPT=$(cat final-prompt.txt)
+
+           curl https://api.openai.com/v1/responses \
+            -H "Authorization: Bearer $OPENAI_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d "$(jq -n \
+              --arg model "gpt-5-mini" \
+              --arg input "$PROMPT" \
+              '{
+                model: $model,
+                input: $input
+              }')" \
+            > ai_response.json
+
+      - name: Show AI Response
+        working-directory: Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization
+        run: |
+          cat ai_response.json
+
+      - name: Pretty Print AI Response
+        working-directory: Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization
+        run: |
+          jq . ai_response.json
+
+      - name: Extract AI Report
+        working-directory: Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization
+        run: |
+          jq -r '
+            .output[]
+            | select(.type=="message")
+            | .content[]
+            | select(.type=="output_text")
+            | .text
+          ' ai_response.json > ai_cost_report.md
+
+      - name: Publish AI Failure Analysis
+        working-directory: Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization
+        run: |
+          echo "" >> $GITHUB_STEP_SUMMARY
+          # echo "---" >> $GITHUB_STEP_SUMMARY
+          # echo "# 🤖 AI Kubernetes Application Failure Analysis" >> $GITHUB_STEP_SUMMARY
+          # echo "" >> $GITHUB_STEP_SUMMARY
+
+          cat ai_cost_report.md >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload AI Analysis Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-app-cost-optimization-analysis
+          path: |
+            Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization/cost-data.txt
+            Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization/final-prompt.txt
+            Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization/ai_response.json
+            Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization/ai_cost_report.md     
