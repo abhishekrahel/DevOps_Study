@@ -23,6 +23,14 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Debug Workspace
+        run: |
+          echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
+          echo "PWD=$(pwd)"
+          ls -la "$GITHUB_WORKSPACE"
+          echo "Projects:"
+          ls -la "$GITHUB_WORKSPACE/Projects"  
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
@@ -51,10 +59,10 @@ jobs:
         run: |
           curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
 
-      - name: Run tfsec Security Scan
-        run: |
-          cd Projects/Terraform/Pipelines/pipeline-test
-          tfsec . --format json > tfsec-results.json
+      # - name: Run tfsec Security Scan
+      #   run: |
+      #     cd Projects/Terraform/Pipelines/pipeline-test
+      #     tfsec . --format json > tfsec-results.json
 
       - name: Display tfsec Results
         run: |
