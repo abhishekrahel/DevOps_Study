@@ -44,6 +44,15 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
+      - name: Check Terraform Project Structure
+        run: |
+            echo "Terraform directories:"
+            find "$GITHUB_WORKSPACE/Projects/Terraform" -maxdepth 3 -type d -print
+
+            echo ""
+            echo "pipeline-test directories:"
+            find "$GITHUB_WORKSPACE/Projects" -type d -name "pipeline-test" -print
+
       - name: Terraform Format Check
         run: terraform fmt -check -recursive 
 
