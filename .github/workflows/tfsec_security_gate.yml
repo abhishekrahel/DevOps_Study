@@ -64,6 +64,13 @@ jobs:
       #   run: |
       #     curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
 
+      - name: Install tfsec
+        run: |
+          wget -q https://github.com/aquasecurity/tfsec/releases/download/v1.28.11/tfsec_1.28.11_linux_amd64.tar.gz
+          tar -xzf tfsec_1.28.11_linux_amd64.tar.gz
+          sudo mv tfsec /usr/local/bin/tfsec
+          tfsec --version
+
       - name: Run tfsec Security Scan
         run: |
           tfsec . --format json > tfsec-results.json
