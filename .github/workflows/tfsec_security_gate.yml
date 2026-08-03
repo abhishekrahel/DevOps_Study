@@ -1,4 +1,4 @@
-name: Terraform Deployment using tfsec
+name: Terraform Deployment using tfsec---AI assisted 
 
 on:
     push:
@@ -11,7 +11,7 @@ jobs:
   terraform:
 
   
-    name: Terraform tfsec
+    name: Terraform ---AI
     runs-on: ubuntu-latest
 
     defaults:
