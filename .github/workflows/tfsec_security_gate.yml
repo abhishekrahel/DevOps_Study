@@ -16,7 +16,7 @@ jobs:
 
     defaults:
       run:
-       working-directory: Projects/Terraform/pipeline-test
+       working-directory: Projects/Terraform/Pipelines/pipeline-test
 
     steps:
 
