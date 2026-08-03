@@ -42,15 +42,21 @@ jobs:
       - name: Terraform Validate
         run: terraform validate
 
-      - name: Run tfsec
-        uses: aquasecurity/tfsec-action@v1.0.3
-        # with:
+      # - name: Run tfsec
+      #   uses: aquasecurity/tfsec-action@v1.0.3
+      #   # with:
         #   working_directory: Projects/Terraform/pipeline-test
+
+      - name: Install tfsec
+        run: |
+          curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
 
       - name: Run tfsec Security Scan
         run: |
-          tfsec Projects/Terraform/Pipelines/pipeline-test --format json Projects/Terraform/Pipelines/pipeline-test/tfsec-results.json
-           
+          tfsec Projects/Terraform/Pipelines/pipeline-test \
+            --format json \
+            > Projects/Terraform/Pipelines/pipeline-test/tfsec-results.json
+
       - name: Display tfsec Results
         run: |
           cat Projects/Terraform/Pipelines/pipeline-test/tfsec-results.json
