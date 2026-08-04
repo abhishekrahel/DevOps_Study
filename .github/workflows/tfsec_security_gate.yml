@@ -79,15 +79,16 @@ jobs:
         run: |
           cat tfsec-results.json
       
+       
       - name: Create Final Prompt
         run: |
-          cat prompts/prompt.md > final-prompt.txt
-          echo "" >> final-prompt.txt
-          cat tfsec-results.json >> final-prompt.txt 
-          
+           cat "$GITHUB_WORKSPACE/Projects/CI-CD/GitHub-Actions/AI/AI_Security_Assessment/prompts/prompt.md" > "$GITHUB_WORKSPACE/Projects/CI-CD/GitHub-Actions/AI/AI_Security_Assessment/final-prompt.txt"
+           echo "" >> "$GITHUB_WORKSPACE/Projects/CI-CD/GitHub-Actions/AI/AI_Security_Assessment/final-prompt.txt" 
+           cat tfsec-results.json "$GITHUB_WORKSPACE/Projects/CI-CD/GitHub-Actions/AI/AI_Security_Assessment/final-prompt.txt"  
+
       - name: Display Final Prompt
         run: |
-          cat final-prompt.txt    
+          cat "$GITHUB_WORKSPACE/Projects/CI-CD/GitHub-Actions/AI/AI_Security_Assessment/final-prompt.txt"     
 
       - name: Terraform Plan
         run: terraform plan -out=tfplan -var-file=input.tfvars
