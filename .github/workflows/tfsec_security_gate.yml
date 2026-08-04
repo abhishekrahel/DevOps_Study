@@ -92,6 +92,17 @@ jobs:
 
       - name: Terraform Plan
         run: terraform plan -out=tfplan -var-file=input.tfvars
+
+      - name: Verify tfsec Results and Final Prompt
+        run: |
+          echo "===== tfsec result file ====="
+          ls -lh tfsec-results.json
+          cat tfsec-results.json
+
+          echo ""
+          echo "===== final-prompt.txt ====="
+          ls -lh "$GITHUB_WORKSPACE/Projects/CI-CD/GitHub-Actions/AI/AI_Security_Assessment/final-prompt.txt"
+          tail -20 "$GITHUB_WORKSPACE/Projects/CI-CD/GitHub-Actions/AI/AI_Security_Assessment/final-prompt.txt"
     
 
     # - name: Manual Approval
