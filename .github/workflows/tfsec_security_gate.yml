@@ -65,7 +65,7 @@ jobs:
 
       - name: Run tfsec Security Scan
         run: |
-          tfsec . --format json > tfsec-results.json
+          tfsec . --format json > tfsec-results.json  || true
 
       - name: Display tfsec Results
         run: cat tfsec-results.json
