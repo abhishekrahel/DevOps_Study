@@ -80,11 +80,35 @@ jobs:
           cat tfsec-results.json
       
        
+      # - name: Create Final Prompt
+      #   run: |
+      #      cat "$GITHUB_WORKSPACE/Projects/CI-CD/GitHub-Actions/AI/AI_Security_Assessment/prompts/prompt.md" > "$GITHUB_WORKSPACE/Projects/CI-CD/GitHub-Actions/AI/AI_Security_Assessment/final-prompt.txt"
+      #      echo "" >> "$GITHUB_WORKSPACE/Projects/CI-CD/GitHub-Actions/AI/AI_Security_Assessment/final-prompt.txt" 
+      #      cat tfsec-results.json "$GITHUB_WORKSPACE/Projects/CI-CD/GitHub-Actions/AI/AI_Security_Assessment/final-prompt.txt"  
+
       - name: Create Final Prompt
         run: |
-           cat "$GITHUB_WORKSPACE/Projects/CI-CD/GitHub-Actions/AI/AI_Security_Assessment/prompts/prompt.md" > "$GITHUB_WORKSPACE/Projects/CI-CD/GitHub-Actions/AI/AI_Security_Assessment/final-prompt.txt"
-           echo "" >> "$GITHUB_WORKSPACE/Projects/CI-CD/GitHub-Actions/AI/AI_Security_Assessment/final-prompt.txt" 
-           cat tfsec-results.json "$GITHUB_WORKSPACE/Projects/CI-CD/GitHub-Actions/AI/AI_Security_Assessment/final-prompt.txt"  
+          PROMPT_FILE="$GITHUB_WORKSPACE/Projects/CI-CD/GitHub-Actions/AI/AI_Security_Assessment/prompts/prompt.md"
+          FINAL_PROMPT="$GITHUB_WORKSPACE/Projects/CI-CD/GitHub-Actions/AI/AI_Security_Assessment/final-prompt.txt"
+
+          echo "Prompt file:"
+          ls -lh "$PROMPT_FILE"
+
+          echo "tfsec result file:"
+          ls -lh tfsec-results.json
+
+          echo "Creating final prompt..."
+
+          cat "$PROMPT_FILE" > "$FINAL_PROMPT"
+          echo "" >> "$FINAL_PROMPT"
+          cat tfsec-results.json >> "$FINAL_PROMPT"
+
+          echo "Final prompt created:"
+          ls -lh "$FINAL_PROMPT"
+
+          echo ""
+          echo "===== LAST 20 LINES ====="
+          tail -20 "$FINAL_PROMPT"     
 
       - name: Display Final Prompt
         run: |
