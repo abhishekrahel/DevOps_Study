@@ -46,7 +46,6 @@ jobs:
         run: |
           echo "Terraform directories:"
           find "$GITHUB_WORKSPACE/Projects/Terraform" -maxdepth 3 -type d -print
-
           echo ""
           echo "pipeline-test directories:"
           find "$GITHUB_WORKSPACE/Projects" -type d -name "pipeline-test" -print
@@ -103,19 +102,59 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           PROMPT_FILE="$GITHUB_WORKSPACE/Projects/CI-CD/GitHub-Actions/AI/AI_Security_Assessment/final-prompt.txt"
+          OUTPUT_FILE="$GITHUB_WORKSPACE/Projects/CI-CD/GitHub-Actions/AI/AI_Security_Assessment/ai_response.json"
+
+          if [ ! -f "$PROMPT_FILE" ]; then
+            echo "Prompt file not found: $PROMPT_FILE" >&2
+            exit 1
+          fi
+
           PROMPT=$(cat "$PROMPT_FILE")
+
+          jq -n \
+            --arg model "gpt-5-mini" \
+            --arg input "$PROMPT" \
+            '{model: $model, input: $input}' > request.json
 
           curl -s https://api.openai.com/v1/responses \
             -H "Authorization: Bearer $OPENAI_API_KEY" \
             -H "Content-Type: application/json" \
-            -d "$(jq -n \
-              --arg model "gpt-5-mini" \
-              --arg input "$PROMPT" \
-              '{
-                model: $model,
-                input: $input
-              }')" \
-            > "$GITHUB_WORKSPACE/Projects/CI-CD/GitHub-Actions/AI/AI_Security_Assessment/ai_response.json"
+            -d @request.json \
+            > "$OUTPUT_FILE"
+
+      - name: Extract AI Security Report
+        run: |
+          cd "$GITHUB_WORKSPACE/Projects/CI-CD/GitHub-Actions/AI/AI_Security_Assessment"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          input_path = Path("ai_response.json")
+          output_path = Path("ai_report.md")
+
+          if input_path.exists():
+              data = json.loads(input_path.read_text(encoding="utf-8"))
+              text_parts = []
+              for item in data.get("output", []):
+                  if item.get("type") == "message":
+                      for content in item.get("content", []):
+                          if content.get("type") == "output_text":
+                              text_parts.append(content.get("text", ""))
+              output_path.write_text("\n".join(text_parts), encoding="utf-8")
+          else:
+              output_path.write_text("AI response file not found.", encoding="utf-8")
+          PY
+
+      - name: Display AI Security Report
+        run: |
+          cat "$GITHUB_WORKSPACE/Projects/CI-CD/GitHub-Actions/AI/AI_Security_Assessment/ai_report.md"
+
+      - name: Publish AI Security Assessment
+        run: |
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "---" >> "$GITHUB_STEP_SUMMARY"
+          echo "# 🤖 AI Terraform Security Assessment" >> "$GITHUB_STEP_SUMMARY"
+          cat "$GITHUB_WORKSPACE/Projects/CI-CD/GitHub-Actions/AI/AI_Security_Assessment/ai_report.md" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Terraform Plan
         run: terraform plan -out=tfplan -var-file=input.tfvars
@@ -123,6 +162,7 @@ jobs:
       - name: Display AI Response
         run: |
           cat "$GITHUB_WORKSPACE/Projects/CI-CD/GitHub-Actions/AI/AI_Security_Assessment/ai_response.json"
+
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
         run: terraform apply --auto-approve tfplan
