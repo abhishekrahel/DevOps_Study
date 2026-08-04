@@ -9,7 +9,7 @@ resource "aws_instance" "infra_by_pipeline" {
     http_tokens   = "required"
   }
 
-    root_block_device {
+  root_block_device {
     encrypted = true
   }
 
