@@ -1,25 +1,23 @@
-name: Terraform Deployment using tfsec---AI assisted 
+name: Terraform Deployment using tfsec - AI assisted
 
 on:
-    push:
-      branches:
-        - main
-        - dev
-    workflow_dispatch:     
+  push:
+    branches:
+      - main
+      - dev
+  workflow_dispatch:
 
 jobs:
   terraform:
-
-  
-    name: Terraform tfsec---AI
+    name: Terraform tfsec - AI
     runs-on: ubuntu-latest
 
     defaults:
       run:
-       working-directory: Projects/Terraform/Pipelines/pipeline-test
+        shell: bash
+        working-directory: Projects/Terraform/Pipelines/pipeline-test
 
     steps:
-
       - name: Checkout Code
         uses: actions/checkout@v4
 
@@ -29,7 +27,7 @@ jobs:
           echo "PWD=$(pwd)"
           ls -la "$GITHUB_WORKSPACE"
           echo "Projects:"
-          ls -la "$GITHUB_WORKSPACE/Projects"  
+          ls -la "$GITHUB_WORKSPACE/Projects"
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -46,23 +44,18 @@ jobs:
 
       - name: Check Terraform Project Structure
         run: |
-            echo "Terraform directories:"
-            find "$GITHUB_WORKSPACE/Projects/Terraform" -maxdepth 3 -type d -print
+          echo "Terraform directories:"
+          find "$GITHUB_WORKSPACE/Projects/Terraform" -maxdepth 3 -type d -print
 
-            echo ""
-            echo "pipeline-test directories:"
-            find "$GITHUB_WORKSPACE/Projects" -type d -name "pipeline-test" -print
+          echo ""
+          echo "pipeline-test directories:"
+          find "$GITHUB_WORKSPACE/Projects" -type d -name "pipeline-test" -print
 
       - name: Terraform Format Check
-        run: terraform fmt -check -recursive 
+        run: terraform fmt -check -recursive
 
       - name: Terraform Validate
         run: terraform validate
-
-      
-      # - name: Install tfsec
-      #   run: |
-      #     curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
 
       - name: Install tfsec
         run: |
@@ -76,15 +69,7 @@ jobs:
           tfsec . --format json > tfsec-results.json
 
       - name: Display tfsec Results
-        run: |
-          cat tfsec-results.json
-      
-       
-      # - name: Create Final Prompt
-      #   run: |
-      #      cat "$GITHUB_WORKSPACE/Projects/CI-CD/GitHub-Actions/AI/AI_Security_Assessment/prompts/prompt.md" > "$GITHUB_WORKSPACE/Projects/CI-CD/GitHub-Actions/AI/AI_Security_Assessment/final-prompt.txt"
-      #      echo "" >> "$GITHUB_WORKSPACE/Projects/CI-CD/GitHub-Actions/AI/AI_Security_Assessment/final-prompt.txt" 
-      #      cat tfsec-results.json "$GITHUB_WORKSPACE/Projects/CI-CD/GitHub-Actions/AI/AI_Security_Assessment/final-prompt.txt"  
+        run: cat tfsec-results.json
 
       - name: Create Final Prompt
         run: |
@@ -108,37 +93,37 @@ jobs:
 
           echo ""
           echo "===== LAST 20 LINES ====="
-          tail -20 "$FINAL_PROMPT"     
+          tail -20 "$FINAL_PROMPT"
 
       - name: Display Final Prompt
+        run: cat "$GITHUB_WORKSPACE/Projects/CI-CD/GitHub-Actions/AI/AI_Security_Assessment/final-prompt.txt"
+
+      - name: Generate AI Security Analysis
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
-          cat "$GITHUB_WORKSPACE/Projects/CI-CD/GitHub-Actions/AI/AI_Security_Assessment/final-prompt.txt"     
+          PROMPT_FILE="$GITHUB_WORKSPACE/Projects/CI-CD/GitHub-Actions/AI/AI_Security_Assessment/final-prompt.txt"
+          PROMPT=$(cat "$PROMPT_FILE")
+
+          curl -s https://api.openai.com/v1/responses \
+            -H "Authorization: Bearer $OPENAI_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d "$(jq -n \
+              --arg model "gpt-5-mini" \
+              --arg input "$PROMPT" \
+              '{
+                model: $model,
+                input: $input
+              }')" \
+            > "$GITHUB_WORKSPACE/Projects/CI-CD/GitHub-Actions/AI/AI_Security_Assessment/ai_response.json"
 
       - name: Terraform Plan
         run: terraform plan -out=tfplan -var-file=input.tfvars
 
-      - name: Verify tfsec Results and Final Prompt
+      - name: Display AI Response
         run: |
-          echo "===== tfsec result file ====="
-          ls -lh tfsec-results.json
-          cat tfsec-results.json
-
-          echo ""
-          echo "===== final-prompt.txt ====="
-          ls -lh "$GITHUB_WORKSPACE/Projects/CI-CD/GitHub-Actions/AI/AI_Security_Assessment/final-prompt.txt"
-          tail -20 "$GITHUB_WORKSPACE/Projects/CI-CD/GitHub-Actions/AI/AI_Security_Assessment/final-prompt.txt"
-    
-
-    # - name: Manual Approval
-    #   uses: trstringer/manual-approval@v1
-    #   with:
-    #     secret: ${{ secrets.GITHUB_TOKEN }}
-    #     approvers: abhishekrahel
-
+          cat "$GITHUB_WORKSPACE/Projects/CI-CD/GitHub-Actions/AI/AI_Security_Assessment/ai_response.json"
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
         run: terraform apply --auto-approve tfplan
-
-      # - name: Terraform Apply
-      #   run: terraform apply -auto-approve tfplan
 
