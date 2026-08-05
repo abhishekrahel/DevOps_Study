@@ -16,18 +16,6 @@ echo "========================================" >> "$OUTPUT_FILE"
 echo "EC2 Instances" >> "$OUTPUT_FILE"
 echo "========================================" >> "$OUTPUT_FILE"
 
-INSTANCE_IDS=$(aws ec2 describe-instances \
-    --filters "Name=tag:Purpose,Values=AI-Resource-Utilization" \
-              "Name=instance-state-name,Values=running" \
-    --query "Reservations[].Instances[].InstanceId" \
-    --output text)
-
-if [ -z "$INSTANCE_IDS" ]; then
-    echo "No running EC2 instances found." >> "$OUTPUT_FILE"
-    exit 0
-fi
-
-echo "Instances found: $INSTANCE_IDS"
 
 mapfile -t INSTANCE_IDS < <(
     aws ec2 describe-instances \
@@ -36,6 +24,13 @@ mapfile -t INSTANCE_IDS < <(
         --output text | tr '\t' '\n'
 )
 
+
+if [ "${#INSTANCE_IDS[@]}" -eq 0 ]; then
+    echo "No running EC2 instances found." >> "$OUTPUT_FILE"
+    exit 0
+fi
+
+echo "Instances found: ${#INSTANCE_IDS[@]}" >> "$OUTPUT_FILE"
 
 for INSTANCE_ID in "${INSTANCE_IDS[@]}"
 do
@@ -49,18 +44,6 @@ do
 
     echo "Instance Type: $INSTANCE_TYPE"
 done
-
-# for INSTANCE_ID in $INSTANCE_IDS
-# do
-#     echo "" >> "$OUTPUT_FILE"
-#     echo "Instance ID: $INSTANCE_ID" >> "$OUTPUT_FILE"
-
-#     INSTANCE_TYPE=$(aws ec2 describe-instances \
-#         --instance-ids "$INSTANCE_ID" \
-#         --query "Reservations[0].Instances[0].InstanceType" \
-#         --output text)
-
-#     echo "Instance Type: $INSTANCE_TYPE" >> "$OUTPUT_FILE"
 
 
 
