@@ -51,7 +51,57 @@ jobs:
           echo "===== FINAL PROMPT ====="
           cat final-prompt.txt
 
+       - name: Generate AI Resource Utilization Report
+        #working-directory: Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          
 
+           PROMPT=$(cat final-prompt.txt)
+
+           curl https://api.openai.com/v1/responses \
+            -H "Authorization: Bearer $OPENAI_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d "$(jq -n \
+              --arg model "gpt-5-mini" \
+              --arg input "$PROMPT" \
+              '{
+                model: $model,
+                input: $input
+              }')" \
+            > ai_response.json
+
+      - name: Show AI Response
+        #working-directory: Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization
+        run: |
+          cat ai_response.json
+
+      - name: Pretty Print AI Response
+       # working-directory: Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization
+        run: |
+          jq . ai_response.json
+
+      - name: Extract AI Report
+        #working-directory: Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization
+        run: |
+          jq -r '
+            .output[]
+            | select(.type=="message")
+            | .content[]
+            | select(.type=="output_text")
+            | .text
+          ' ai_response.json > ai_resource_utilization_report.md
+
+      - name: Publish AI Resource Utilization Analysis
+        #working-directory: Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization
+        run: |
+          echo "" >> $GITHUB_STEP_SUMMARY
+          # echo "---" >> $GITHUB_STEP_SUMMARY
+          # echo "# 🤖 AI Resource Utilization Analysis" >> $GITHUB_STEP_SUMMARY
+          # echo "" >> $GITHUB_STEP_SUMMARY
+
+          cat ai_resource_utilization_report.md >> $GITHUB_STEP_SUMMARY    
       
         
         
