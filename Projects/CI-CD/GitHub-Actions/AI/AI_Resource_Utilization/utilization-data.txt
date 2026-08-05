@@ -1,8 +1,9 @@
 ========================================
 AI RESOURCE UTILIZATION - AWS EC2
 ========================================
-Generated on: Wed Aug  5 18:27:30 IST 2026
+Generated on: Wed Aug  5 18:33:09 IST 2026
 
 ========================================
 EC2 Instances
 ========================================
+Instances found: 2

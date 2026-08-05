@@ -21,7 +21,7 @@ mapfile -t INSTANCE_IDS < <(
     aws ec2 describe-instances \
         --filters "Name=instance-state-name,Values=running" \
         --query "Reservations[].Instances[].InstanceId" \
-        --output text | tr '\t' '\n'
+        --output text | tr '\t' '\n' | tr -d '\r'
 )
 
 
