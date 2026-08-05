@@ -1,0 +1,48 @@
+name: AI Resource Utilization Report
+
+on:
+  # push:
+  #   branches:
+  #     - master
+  workflow_dispatch:     
+
+jobs:
+  collect_utilization_data:
+
+  
+    
+    runs-on: ubuntu-latest
+
+    defaults: 
+        run:
+         working-directory: Projects/CI-CD/GitHub-Actions/AI/AI_Resource_Utilization
+
+    steps:
+
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      
+      - name: Create Final Prompt
+        run: |
+          cat prompts/prompt.md > final-prompt.txt
+          echo "" >> final-prompt.txt
+          sed -i 's/::UTILIZATION_DATA:://' final-prompt.txt
+          cat scripts/utilization-summary.txt >> final-prompt.txt
+
+      - name: Display Final Prompt
+        run: |
+          echo "===== FINAL PROMPT ====="
+          cat final-prompt.txt
+
+
+      
+        
+        
