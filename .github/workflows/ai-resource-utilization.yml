@@ -51,12 +51,12 @@ jobs:
           echo "===== FINAL PROMPT ====="
           cat final-prompt.txt
 
-       - name: Generate AI Resource Utilization Report
+      - name: Generate AI Resource Utilization Report
         #working-directory: Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
-          
+        
 
            PROMPT=$(cat final-prompt.txt)
 
