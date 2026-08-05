@@ -29,10 +29,15 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Collect EC2 Utilization
+      - name: Collect EC2 Resource Utilization
         run: |
             chmod +x scripts/collect_utilization_data.sh
-            ./scripts/collect_utilization_data.sh       
+            ./scripts/collect_utilization_data.sh 
+            
+      - name: Display Utilization Summary
+        run: |
+            echo "===== UTILIZATION SUMMARY ====="
+            cat scripts/utilization-summary.txt      
       
       - name: Create Final Prompt
         run: |

@@ -1,7 +1,7 @@
 ========================================
 AI RESOURCE UTILIZATION - SUMMARY
 ========================================
-Generated on: Wed Aug  5 18:53:59 IST 2026
+Generated on: Wed Aug  5 19:50:04 IST 2026
 
 ========================================
 EC2 Resource Utilization Summary
@@ -31,9 +31,9 @@ Instance ID: i-0b85c5dcf7731c73a
 Instance Type: t3.small
 
 CPU Utilization Summary:
-Average : 0.20%
-Minimum : 0.20%
-Maximum : 0.20%
+Average : 0.19%
+Minimum : 0.19%
+Maximum : 0.19%
 
 Network In Summary:
 Average : 0.00 bytes
