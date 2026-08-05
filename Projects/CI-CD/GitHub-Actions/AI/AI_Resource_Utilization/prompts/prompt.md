@@ -117,9 +117,8 @@ Clearly distinguish between:
 
 ## Utilization Data
 
+```text
 The utilization summary begins below:
 
-```text
 ::UTILIZATION_DATA::
-```
 
