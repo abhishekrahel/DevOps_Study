@@ -53,7 +53,7 @@ do
         --end-time "$(date -u '+%Y-%m-%dT%H:%M:%SZ')" \
         --region us-east-1 \
         --query "Datapoints[].[Timestamp,Average]" \
-        --output text | sort)
+        --output text | sort  | tr -d '\r')
 
     if [ -z "$CPU_DATA" ]; then
     echo "No CPU datapoints available." >> "$OUTPUT_FILE"
@@ -79,7 +79,7 @@ fi
         --end-time "$(date -u '+%Y-%m-%dT%H:%M:%SZ')" \
         --region us-east-1 \
         --query "Datapoints[].[Timestamp,Average]" \
-        --output text | sort)
+        --output text | sort  | tr -d '\r')
 
 
      if [ -z "$NETWORK_IN_DATA" ]; then
@@ -104,7 +104,7 @@ fi
         --end-time "$(date -u '+%Y-%m-%dT%H:%M:%SZ')" \
         --region us-east-1 \
         --query "Datapoints[].[Timestamp,Average]" \
-        --output text | sort)
+        --output text | sort  | tr -d '\r')
 
     if [ -z "$NETWORK_OUT_DATA" ]; then
     echo "No Network Out datapoints available." >> "$OUTPUT_FILE"
