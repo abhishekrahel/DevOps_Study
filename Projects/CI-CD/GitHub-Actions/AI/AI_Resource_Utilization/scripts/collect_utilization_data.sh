@@ -66,10 +66,10 @@ fi
 
     echo "" >> "$OUTPUT_FILE"
 
-    
+
     echo "Network In:" >> "$OUTPUT_FILE"
 
-    aws cloudwatch get-metric-statistics \
+    NETWORK_IN_DATA=$(aws cloudwatch get-metric-statistics \
         --namespace AWS/EC2 \
         --metric-name NetworkIn \
         --dimensions Name=InstanceId,Value="$INSTANCE_ID" \
@@ -79,12 +79,22 @@ fi
         --end-time "$(date -u '+%Y-%m-%dT%H:%M:%SZ')" \
         --region us-east-1 \
         --query "Datapoints[].[Timestamp,Average]" \
-        --output table >> "$OUTPUT_FILE"
+        --output text | sort)
+
+
+     if [ -z "$NETWORK_IN_DATA" ]; then
+    echo "No Network In datapoints available." >> "$OUTPUT_FILE"
+else
+    while read -r TIMESTAMP VALUE
+    do
+        printf "%-25s : %.2f bytes\n" "$TIMESTAMP" "$VALUE" >> "$OUTPUT_FILE"
+    done <<< "$NETWORK_IN_DATA"
+fi   
 
     echo "" >> "$OUTPUT_FILE"
     echo "Network Out:" >> "$OUTPUT_FILE"
 
-    aws cloudwatch get-metric-statistics \
+    NETWORK_OUT_DATA=$(aws cloudwatch get-metric-statistics \
         --namespace AWS/EC2 \
         --metric-name NetworkOut \
         --dimensions Name=InstanceId,Value="$INSTANCE_ID" \
@@ -94,7 +104,16 @@ fi
         --end-time "$(date -u '+%Y-%m-%dT%H:%M:%SZ')" \
         --region us-east-1 \
         --query "Datapoints[].[Timestamp,Average]" \
-        --output table >> "$OUTPUT_FILE"
+        --output text | sort)
+
+    if [ -z "$NETWORK_OUT_DATA" ]; then
+    echo "No Network Out datapoints available." >> "$OUTPUT_FILE"
+else
+    while read -r TIMESTAMP VALUE
+    do
+        printf "%-25s : %.2f bytes\n" "$TIMESTAMP" "$VALUE" >> "$OUTPUT_FILE"
+    done <<< "$NETWORK_OUT_DATA"
+fi
 
 done
 
