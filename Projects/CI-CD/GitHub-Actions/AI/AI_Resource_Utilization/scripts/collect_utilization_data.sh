@@ -122,7 +122,7 @@ else
     done <<< "$NETWORK_OUT_DATA"
 fi
 
-done
+
 
 echo "" >> "$OUTPUT_FILE"
 echo "========================================" >> "$OUTPUT_FILE"
