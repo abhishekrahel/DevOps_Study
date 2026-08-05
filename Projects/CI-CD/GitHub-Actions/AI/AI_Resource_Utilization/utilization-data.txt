@@ -1,7 +1,7 @@
 ========================================
 AI RESOURCE UTILIZATION - AWS EC2
 ========================================
-Generated on: Wed Aug  5 14:42:15 IST 2026
+Generated on: Wed Aug  5 14:49:51 IST 2026
 
 ========================================
 EC2 Instances
@@ -10,20 +10,4 @@ EC2 Instances
 Instance ID: i-00547f7b8087f997f
 Instance Type: t3.micro
 CPU Utilization:
-2026-08-05T14:37:00+05:30 : 0.00%
-
-Network In:
-
-Network Out:
-
-Instance ID: i-0b85c5dcf7731c73a
-Instance Type: t3.small
-CPU Utilization:
-2026-08-05T14:37:00+05:30 : 0.00%
-
-Network In:
-
-Network Out:
-
-========================================
-Collection completed.
+2026-08-05T14:40:00+05:30 : 0.38%

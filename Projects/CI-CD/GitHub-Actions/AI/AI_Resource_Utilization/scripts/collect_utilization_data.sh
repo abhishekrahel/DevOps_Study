@@ -55,10 +55,10 @@ do
         --query "Datapoints[].[Timestamp,Average]" \
         --output text | sort)
 
-        if [ -z "$CPU_DATA" ]; then
+    if [ -z "$CPU_DATA" ]; then
     echo "No CPU datapoints available." >> "$OUTPUT_FILE"
 else
-     while read -r TIMESTAMP VALUE
+    while read -r TIMESTAMP VALUE
     do
         printf "%-25s : %.2f%%\n" "$TIMESTAMP" "$VALUE" >> "$OUTPUT_FILE"
     done <<< "$CPU_DATA"
