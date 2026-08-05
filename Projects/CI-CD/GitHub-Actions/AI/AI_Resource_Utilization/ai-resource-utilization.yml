@@ -1,0 +1,107 @@
+name: AI Resource Utilization Report
+
+on:
+  # push:
+  #   branches:
+  #     - master
+  workflow_dispatch:     
+
+jobs:
+  collect_utilization_data:
+
+  
+    
+    runs-on: ubuntu-latest
+
+    defaults: 
+        run:
+         working-directory: Projects/CI-CD/GitHub-Actions/AI/AI_Resource_Utilization
+
+    steps:
+
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Collect EC2 Resource Utilization
+        run: |
+            chmod +x scripts/collect_utilization_data.sh
+            ./scripts/collect_utilization_data.sh 
+            
+      - name: Display Utilization Summary
+        run: |
+            echo "===== UTILIZATION SUMMARY ====="
+            cat scripts/utilization-summary.txt      
+      
+      - name: Create Final Prompt
+        run: |
+          cat prompts/prompt.md > final-prompt.txt
+          echo "" >> final-prompt.txt
+          sed -i 's/::UTILIZATION_DATA:://' final-prompt.txt
+          cat scripts/utilization-summary.txt >> final-prompt.txt
+
+      - name: Display Final Prompt
+        run: |
+          echo "===== FINAL PROMPT ====="
+          cat final-prompt.txt
+
+      - name: Generate AI Resource Utilization Report
+        #working-directory: Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+        
+
+           PROMPT=$(cat final-prompt.txt)
+
+           curl https://api.openai.com/v1/responses \
+            -H "Authorization: Bearer $OPENAI_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d "$(jq -n \
+              --arg model "gpt-5-mini" \
+              --arg input "$PROMPT" \
+              '{
+                model: $model,
+                input: $input
+              }')" \
+            > ai_response.json
+
+      - name: Show AI Response
+        #working-directory: Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization
+        run: |
+          cat ai_response.json
+
+      - name: Pretty Print AI Response
+       # working-directory: Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization
+        run: |
+          jq . ai_response.json
+
+      - name: Extract AI Report
+        #working-directory: Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization
+        run: |
+          jq -r '
+            .output[]
+            | select(.type=="message")
+            | .content[]
+            | select(.type=="output_text")
+            | .text
+          ' ai_response.json > ai_resource_utilization_report.md
+
+      - name: Publish AI Resource Utilization Analysis
+        #working-directory: Projects/CI-CD/GitHub-Actions/AI/AI_Cost_Optimization
+        run: |
+          echo "" >> $GITHUB_STEP_SUMMARY
+          # echo "---" >> $GITHUB_STEP_SUMMARY
+          # echo "# 🤖 AI Resource Utilization Analysis" >> $GITHUB_STEP_SUMMARY
+          # echo "" >> $GITHUB_STEP_SUMMARY
+
+          cat ai_resource_utilization_report.md >> $GITHUB_STEP_SUMMARY    
+      
+        
+        
