@@ -43,7 +43,7 @@ do
 
     echo "CPU Utilization:" >> "$OUTPUT_FILE"
 
-    aws cloudwatch get-metric-statistics \
+    CPU_DATA=$(aws cloudwatch get-metric-statistics \
         --namespace AWS/EC2 \
         --metric-name CPUUtilization \
         --dimensions Name=InstanceId,Value="$INSTANCE_ID" \
@@ -53,9 +53,20 @@ do
         --end-time "$(date -u '+%Y-%m-%dT%H:%M:%SZ')" \
         --region us-east-1 \
         --query "Datapoints[].[Timestamp,Average]" \
-        --output table >> "$OUTPUT_FILE"
+        --output text | sort)
 
-            echo "" >> "$OUTPUT_FILE"
+        if [ -z "$CPU_DATA" ]; then
+    echo "No CPU datapoints available." >> "$OUTPUT_FILE"
+else
+     while read -r TIMESTAMP VALUE
+    do
+        printf "%-25s : %.2f%%\n" "$TIMESTAMP" "$VALUE" >> "$OUTPUT_FILE"
+    done <<< "$CPU_DATA"
+fi
+
+    echo "" >> "$OUTPUT_FILE"
+
+    
     echo "Network In:" >> "$OUTPUT_FILE"
 
     aws cloudwatch get-metric-statistics \
