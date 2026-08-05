@@ -29,17 +29,41 @@ fi
 
 echo "Instances found: $INSTANCE_IDS"
 
-for INSTANCE_ID in $INSTANCE_IDS
+mapfile -t INSTANCE_IDS < <(
+    aws ec2 describe-instances \
+        --filters "Name=instance-state-name,Values=running" \
+        --query "Reservations[].Instances[].InstanceId" \
+        --output text | tr '\t' '\n'
+)
+
+
+for INSTANCE_ID in "${INSTANCE_IDS[@]}"
 do
-    echo "" >> "$OUTPUT_FILE"
-    echo "Instance ID: $INSTANCE_ID" >> "$OUTPUT_FILE"
+    echo "Processing instance: $INSTANCE_ID"
 
     INSTANCE_TYPE=$(aws ec2 describe-instances \
         --instance-ids "$INSTANCE_ID" \
+        --region us-east-1 \
         --query "Reservations[0].Instances[0].InstanceType" \
         --output text)
 
-    echo "Instance Type: $INSTANCE_TYPE" >> "$OUTPUT_FILE"
+    echo "Instance Type: $INSTANCE_TYPE"
+done
+
+# for INSTANCE_ID in $INSTANCE_IDS
+# do
+#     echo "" >> "$OUTPUT_FILE"
+#     echo "Instance ID: $INSTANCE_ID" >> "$OUTPUT_FILE"
+
+#     INSTANCE_TYPE=$(aws ec2 describe-instances \
+#         --instance-ids "$INSTANCE_ID" \
+#         --query "Reservations[0].Instances[0].InstanceType" \
+#         --output text)
+
+#     echo "Instance Type: $INSTANCE_TYPE" >> "$OUTPUT_FILE"
+
+
+
 
     echo "CPU Utilization:" >> "$OUTPUT_FILE"
 
