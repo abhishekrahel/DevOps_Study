@@ -21,8 +21,17 @@ jobs:
       - name: Verify AWS identity
         run: aws sts get-caller-identity
 
- #### Create the AWS OIDC provider and IAM role      
+ #### Create the AWS OIDC provider and IAM role  
+ 
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform version
+        run: terraform version
+
+      - name: Terraform AWS identity test
+        run: terraform -chdir=Projects/CI-CD/GitHub-Actions/terraform-oidc-test init
  
  
- 
+
 
