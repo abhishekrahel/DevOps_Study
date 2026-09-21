@@ -30,10 +30,10 @@ jobs:
         run: terraform version
 
       - name: Terraform AWS identity test
-        run: terraform -chdir=Projects/CI-CD/GitHub-Actions/terraform-oidc-test init
+        run: terraform -chdir=terraform-oidc-test init
 
       - name: Terraform Plan
-        run: terraform -chdir=Projects/CI-CD/GitHub-Actions/terraform-oidc-test plan
+        run: terraform -chdir=terraform-oidc-test plan
  
  
 
