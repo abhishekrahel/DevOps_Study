@@ -36,24 +36,24 @@ jobs:
       - name: Terraform version
         run: terraform version
 
-      - name: Debug repository structure
-        run: |
-          echo "Current directory:"
-          pwd
+    #   - name: Debug repository structure
+    #     run: |
+    #       echo "Current directory:"
+    #       pwd
 
-          echo ""
-          echo "Top-level files/directories:"
-          ls -la
+    #       echo ""
+    #       echo "Top-level files/directories:"
+    #       ls -la
 
-          echo ""
-          echo "Looking for main.tf:"
-          find . -name main.tf -print
+    #       echo ""
+    #       echo "Looking for main.tf:"
+    #       find . -name main.tf -print
 
-    #   - name: Terraform AWS identity test
-    #     run: terraform -chdir=terraform-oidc-test init
+      - name: Terraform AWS identity test
+        run: terraform -chdir=Projects/CI-CD/GitHub-Actions/terraform-oidc-test init
 
-    #   - name: Terraform Plan
-    #     run: terraform -chdir=terraform-oidc-test plan
+      - name: Terraform Plan
+        run: terraform -chdir=Projects/CI-CD/GitHub-Actions/terraform-oidc-test plan
  
  
 
