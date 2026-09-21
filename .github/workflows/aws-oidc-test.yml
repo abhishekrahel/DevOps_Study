@@ -11,6 +11,10 @@ jobs:
   aws-identity-test:
     runs-on: ubuntu-latest
 
+    defaults: 
+      run:
+        working-directory: Projects/CI-CD/GitHub-Actions
+
     steps:
       - name: Configure AWS credentials using OIDC
         uses: aws-actions/configure-aws-credentials@v4
