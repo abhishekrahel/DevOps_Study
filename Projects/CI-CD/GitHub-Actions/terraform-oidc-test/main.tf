@@ -18,6 +18,17 @@ resource "aws_s3_bucket" "terraform_test" {
 
 }
 
+resource "aws_s3_bucket_logging" "terraform_test" {
+  bucket = aws_s3_bucket.terraform_test.id
+
+  target_bucket = aws_s3_bucket.terraform_logs.id
+  target_prefix = "s3-access-logs/"
+}
+
+resource "aws_s3_bucket" "terraform_logs" {
+  bucket_prefix = "devops-terraform-security-logs-"
+}
+
 resource "aws_kms_key" "terraform_test" {
   description         = "KMS key for Terraform S3 security test"
   enable_key_rotation = true
