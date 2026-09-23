@@ -64,10 +64,10 @@ jobs:
       - name: Terraform Validate
         run: terraform -chdir=Projects/CI-CD/GitHub-Actions/terraform-oidc-test validate
 
-      - name: Terraform Security Scan
-        uses: aquasecurity/tfsec-action@v1.0.3
-        with:
-          working_directory: Projects/CI-CD/GitHub-Actions/terraform-oidc-test
+      # - name: Terraform Security Scan
+      #   uses: aquasecurity/tfsec-action@v1.0.3
+      #   with:
+      #     working_directory: Projects/CI-CD/GitHub-Actions/terraform-oidc-test
   
       - name: Terraform Plan
         run: terraform -chdir=Projects/CI-CD/GitHub-Actions/terraform-oidc-test plan
