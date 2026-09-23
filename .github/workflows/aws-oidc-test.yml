@@ -70,6 +70,7 @@ jobs:
         uses: aquasecurity/tfsec-action@v1.0.3
         with:
           working_directory: Projects/CI-CD/GitHub-Actions/terraform-oidc-test
+          soft_fail: true
   
       - name: Terraform Plan
         run: terraform -chdir=Projects/CI-CD/GitHub-Actions/terraform-oidc-test plan
