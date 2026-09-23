@@ -49,9 +49,26 @@ jobs:
     #       echo "Looking for main.tf:"
     #       find . -name main.tf -print
 
-      - name: Terraform AWS identity test
+
+      - name: Terraform Init
         run: terraform -chdir=Projects/CI-CD/GitHub-Actions/terraform-oidc-test init
 
+
+      - name: Terraform Format Check
+        run: terraform -chdir=Projects/CI-CD/GitHub-Actions/terraform-oidc-test fmt -check
+
+
+      # - name: Terraform AWS identity Init
+      #   run: terraform -chdir=Projects/CI-CD/GitHub-Actions/terraform-oidc-test init
+
+      - name: Terraform Validate
+        run: terraform -chdir=Projects/CI-CD/GitHub-Actions/terraform-oidc-test validate
+
+      - name: Terraform Security Scan
+        uses: aquasecurity/tfsec-action@v1.0.3
+        with:
+          working_directory: Projects/CI-CD/GitHub-Actions/terraform-oidc-test
+  
       - name: Terraform Plan
         run: terraform -chdir=Projects/CI-CD/GitHub-Actions/terraform-oidc-test plan
  
