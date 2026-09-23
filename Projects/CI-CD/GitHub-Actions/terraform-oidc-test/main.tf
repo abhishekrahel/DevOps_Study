@@ -37,6 +37,14 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "terraform_test" {
   }
 }
 
+resource "aws_s3_bucket_versioning" "terraform_test" {
+  bucket = aws_s3_bucket.terraform_test.id
+
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
 resource "aws_s3_bucket_public_access_block" "terraform_test" {
   bucket = aws_s3_bucket.terraform_test.id
 
