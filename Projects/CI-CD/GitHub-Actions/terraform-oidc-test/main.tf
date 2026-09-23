@@ -18,6 +18,11 @@ resource "aws_s3_bucket" "terraform_test" {
 
 }
 
+resource "aws_kms_key" "terraform_test" {
+  description         = "KMS key for Terraform S3 security test"
+  enable_key_rotation = true
+}
+
 resource "aws_s3_bucket_server_side_encryption_configuration" "terraform_test" {
   bucket = aws_s3_bucket.terraform_test.id
 
@@ -26,7 +31,8 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "terraform_test" {
 
   rule {
     apply_server_side_encryption_by_default {
-      sse_algorithm = "AES256"
+      sse_algorithm     = "aws:kms"
+      kms_master_key_id = aws_kms_key.terraform_test.arn
     }
   }
 }
