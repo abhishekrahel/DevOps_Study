@@ -1,0 +1,1 @@
+S3 to EC2 artifact deployment test

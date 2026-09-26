@@ -26,27 +26,36 @@ jobs:
     #   - name: Verify AWS Identity
     #     run: aws sts get-caller-identity
 
-      - name: Deploy Application to EC2
+
+      - name: Upload Application Artifact
         run: |
-          COMMAND_ID=$(aws ssm send-command \
-            --instance-ids i-0cd030a5eb8d11bb4 \
-            --document-name "AWS-RunShellScript" \
-            --parameters 'commands=[
-              "echo \"Deployed through GitHub Actions + AWS SSM\" > /usr/share/nginx/html/index.html",
-              "systemctl restart nginx",
-              "systemctl is-active nginx"
-            ]' \
-            --query "Command.CommandId" \
-            --output text)
+          aws s3 cp \
+            Projects/CI-CD/GitHub-Actions/ec2-deployment/index.html \
+            s3://devops-ec2-artifacts-5762dd888a9aabf29c4a1e3c22/index.html \
+            --sse aws:kms \
+            --sse-kms-key-id arn:aws:kms:us-east-1:449957914366:key/020aa562-d4e7-4922-a5ba-627431951935
 
-          echo "Command ID: $COMMAND_ID"
+    #   - name: Deploy Application to EC2
+    #     run: |
+    #       COMMAND_ID=$(aws ssm send-command \
+    #         --instance-ids i-0cd030a5eb8d11bb4 \
+    #         --document-name "AWS-RunShellScript" \
+    #         --parameters 'commands=[
+    #           "echo \"Deployed through GitHub Actions + AWS SSM\" > /usr/share/nginx/html/index.html",
+    #           "systemctl restart nginx",
+    #           "systemctl is-active nginx"
+    #         ]' \
+    #         --query "Command.CommandId" \
+    #         --output text)
 
-          aws ssm wait command-executed \
-            --command-id "$COMMAND_ID" \
-            --instance-id i-0cd030a5eb8d11bb4
+    #       echo "Command ID: $COMMAND_ID"
 
-          aws ssm get-command-invocation \
-            --command-id "$COMMAND_ID" \
-            --instance-id i-0cd030a5eb8d11bb4 \
-            --query "{Status:Status,Output:StandardOutputContent,Error:StandardErrorContent}" \
-            --output yaml
+    #       aws ssm wait command-executed \
+    #         --command-id "$COMMAND_ID" \
+    #         --instance-id i-0cd030a5eb8d11bb4
+
+    #       aws ssm get-command-invocation \
+    #         --command-id "$COMMAND_ID" \
+    #         --instance-id i-0cd030a5eb8d11bb4 \
+    #         --query "{Status:Status,Output:StandardOutputContent,Error:StandardErrorContent}" \
+    #         --output yaml
