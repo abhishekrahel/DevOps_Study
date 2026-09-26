@@ -83,4 +83,5 @@ jobs:
           --command-id "$COMMAND_ID" \
           --instance-id i-0cd030a5eb8d11bb4 \
           --query "{Status:Status,Output:StandardOutputContent,Error:StandardErrorContent}" \
-        -output yaml
+          --output yaml
+          
