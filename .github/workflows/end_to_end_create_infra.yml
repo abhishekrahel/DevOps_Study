@@ -7,7 +7,7 @@ on:
   workflow_dispatch:     
 
 jobs:
-  infra_terraform:
+  terraform-plan:
 
   
     
@@ -44,11 +44,49 @@ jobs:
       - name: Terraform Plan 
         run: terraform plan -out=tfplan -var-file="input.tfvars"
 
-    # - name: Manual Approval
-    #   uses: trstringer/manual-approval@v1
-    #   with:
-    #     secret: ${{ secrets.GITHUB_TOKEN }}
-    #     approvers: abhishekrahel
+      - name: Upload Terraform Plan
+        uses: actions/upload-artifact@v4
+        with:
+          name: terraform-plan
+          path: Projects/EKS-Cluster/Terraform/tfplan
 
-      - name: Terraform Apply      
+
+    terraform-apply:
+    needs: terraform-plan
+    runs-on: ubuntu-latest
+
+    environment:
+      name: production
+
+    defaults:
+      run:
+        working-directory: Projects/EKS-Cluster/Terraform  
+        
+        
+     steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1   
+
+    
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Download Terraform Plan
+        uses: actions/download-artifact@v4
+        with:
+          name: terraform-plan
+          path: Projects/EKS-Cluster/Terraform
+
+      - name: Terraform Apply
         run: terraform apply --auto-approve tfplan

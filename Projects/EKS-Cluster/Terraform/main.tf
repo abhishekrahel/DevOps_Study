@@ -99,11 +99,11 @@ module "security_group" {
 
 module "public_ec2" {
   source = "../../Terraform/Modules/ec2"
-  
-  vpc_id              = module.vpc.vpc_id
-  ami_id               = var.ami_id
-  instance_type        = var.instance_type
-  subnet_ids           = module.subnet.public_subnet_ids
+
+  vpc_id        = module.vpc.vpc_id
+  ami_id        = var.ami_id
+  instance_type = var.instance_type
+  subnet_ids    = module.subnet.public_subnet_ids
 
 }
 
