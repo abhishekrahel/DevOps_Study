@@ -50,13 +50,19 @@ jobs:
       - name: Terraform Plan
         run: terraform plan -out=tfplan -var-file=input.tfvars
 
-      
+        - name: Upload Terraform Plan
+          uses: actions/upload-artifact@v4
+          with:
+            name: terraform-plan
+            path: Projects/Terraform/pipeline-test/tfplan
 
       
 
-terraform-apply:
+      
 
-    needs: terraform-plan
+  terraform-apply:
+
+    needs: terraform
     runs-on: ubuntu-latest
 
     environment:
