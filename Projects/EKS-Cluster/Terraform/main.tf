@@ -73,26 +73,48 @@ module "security_group" {
 }
 
 
-module "eks" {
-  source = "../../Terraform/Modules/eks"
+# module "eks" {
+#   source = "../../Terraform/Modules/eks"
 
 
-  cluster_name = "${var.environment}-eks-cluster"
-  #cluster_name       = var.cluster_name
-  private_subnet_ids = module.subnet.private_subnet_ids
+#   cluster_name = "${var.environment}-eks-cluster"
+#   #cluster_name       = var.cluster_name
+#   private_subnet_ids = module.subnet.private_subnet_ids
 
-  desired_capacity = var.desired_capacity
-  max_capacity     = var.max_capacity
-  min_capacity     = var.min_capacity
+#   desired_capacity = var.desired_capacity
+#   max_capacity     = var.max_capacity
+#   min_capacity     = var.min_capacity
 
-  instance_types = var.instance_types
-  capacity_type  = var.capacity_type
-  disk_size      = var.disk_size
+#   instance_types = var.instance_types
+#   capacity_type  = var.capacity_type
+#   disk_size      = var.disk_size
+
+# }
+
+# module "ecr" {
+#   source       = "../../Terraform/Modules/ecr"
+#   repo_name    = "${var.environment}-nginx-repo"
+#   scan_on_push = true
+# }
+
+module "public_ec2" {
+  source = "../../Terraform/Modules/ec2"
+  
+  vpc_id              = module.vpc.vpc_id
+  ami_id               = var.ami_id
+  instance_type        = var.instance_type
+  subnet_ids           = module.subnet.public_subnet_ids
 
 }
 
-module "ecr" {
-  source       = "../../Terraform/Modules/ecr"
-  repo_name    = "${var.environment}-nginx-repo"
-  scan_on_push = true
+
+
+module "private_ec2" {
+  source = "../../Terraform/Modules/ec2"
+
+  vpc_id        = module.vpc.vpc_id
+  ami_id        = var.ami_id
+  instance_type = var.instance_type
+  subnet_ids    = module.subnet.private_subnet_ids
 }
+
