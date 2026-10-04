@@ -5,7 +5,12 @@ on:
       branches:
         - main
         - dev
-    workflow_dispatch:     
+    workflow_dispatch:    
+    
+    
+permissions:
+  id-token: write
+  contents: read
 
 jobs:
   terraform:
@@ -26,12 +31,19 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
+    #The action obtains the GitHub OIDC token and exchanges it with AWS STS for temporary credentials.
+      # Create the IAM OIDC provider
+      # Create the IAM role
+      # Important: restrict the trust policy
+      # Permissions
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: arn:aws:iam::449957914366:role/GitHubActionsOIDCTestRole
           aws-region: us-east-1
+
+      - name: Verify AWS Identity
+        run: aws sts get-caller-identity
 
       - name: Terraform Init
         run: terraform init
